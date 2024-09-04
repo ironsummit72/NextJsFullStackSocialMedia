@@ -1,9 +1,9 @@
 import {Request, Response} from 'express'
-import ApiResponse from '../utils/ApiResponse'
+import ApiResponse from '../utils/ApiResponse.util'
 import userModel from '../models/users.model'
 import {userLoginWithUsername, UserRegisterSchema} from '../validation/zodValidations'
-import {comparePassword} from '../utils/genHashPassword'
-import {signJwt} from '../utils/JWT'
+import {comparePassword} from '../utils/genHashPassword.util'
+import {signJwt} from '../utils/JWT.util'
 import envs from '../conf/env'
 
 export async function handleRegister(req: Request, res: Response) {
