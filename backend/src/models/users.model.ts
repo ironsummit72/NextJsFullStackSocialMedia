@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
-import { UserModel } from "../types/types";
-import { hashPassword } from "../utils/genHashPassword";
+import { UserModel } from "../types/ModelType";
+import { hashPassword } from "../utils/genHashPassword.util";
 const userSchema = new Schema<UserModel>({
   username: {
     type: String,
