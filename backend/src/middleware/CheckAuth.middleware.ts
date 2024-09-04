@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from 'express'
 import jsonwebtoken from 'jsonwebtoken'
 import envs from '../conf/env'
-import ApiResponse from '../utils/ApiResponse'
+import ApiResponse from '../utils/ApiResponse.util'
 export default function isUserAuthenticated(req: Request, res: Response, next: NextFunction) {
 	const token = req.cookies?.sessionId
 	const jwtSecret = envs.JWT_SECRET || ''
