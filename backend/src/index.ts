@@ -4,7 +4,7 @@ import morgan from 'morgan'
 import authRouter from './routes/auth.route'
 import postRouter from './routes/post.route'
 
-import ConnectDB from './utils/connectDb'
+import ConnectDB from './utils/connectDb.util'
 import cookieParser from 'cookie-parser'
 import getCurrentUser from './middleware/CurrentUser.middleware'
 import isUserAuthenticated from './middleware/CheckAuth.middleware'
