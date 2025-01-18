@@ -12,10 +12,10 @@ export const UserRegisterSchema = z
 		password: z.string().min(5, 'Password must be at least 5 characters').trim(),
 		cpassword: z.string(),
 	})
-	.refine((data) => data.password === data.cpassword, {
-		message: 'confirm password not match with password',
-		path: ['cpassword'],
-	})
+	.refine((data) => data.password !== data.cpassword, {
+		message: "password not matching ",
+	  });
+	
 
 export const userLoginWithUsername = z.object({
 	username: z.string().min(3, 'username must be at least 5 characters').trim(),
