@@ -4,14 +4,14 @@ import path from 'node:path'
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
 		if (fs.existsSync('./uploads')) {
-			cb(null, '/uploads')
+			cb(null, './uploads')
 		} else {
 			fs.mkdir('./uploads', (err) => {
 				if (err) {
 					console.error(err)
 				}
 				console.log('directory created successfully')
-				cb(null, '/uploads')
+				cb(null, './uploads')
 			})
 		}
 	},
