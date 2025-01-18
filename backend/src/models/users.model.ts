@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { UserModel } from "../types/ModelType";
+import { UserModel } from "../types/DatabaseModelTypes";
 import { hashPassword } from "../utils/genHashPassword.util";
 const userSchema = new Schema<UserModel>({
   username: {
@@ -30,6 +30,7 @@ const userSchema = new Schema<UserModel>({
     trim: true,
   },
   posts: [{ type: Schema.Types.ObjectId, ref: "post" }],
+  
 });
 userSchema.pre("save", async function (next) {
   try {
