@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { PostModel } from "../types/ModelType";
+import { PostModel } from "../types/DatabaseModelTypes";
 const PostSchema = new Schema<PostModel>({
   user: {
     type: Schema.Types.ObjectId,
