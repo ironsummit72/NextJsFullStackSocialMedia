@@ -6,9 +6,15 @@ export interface UserModel {
 	lastName: string
 	email: string
 	password: string
+	bio:string
 	posts: Array<DB_Relation>
 	displayPicturePath: string
-	coverPicturePath: String
+	savedPosts:[],
+	taggedPosts:[],
+	followers:[],
+	following:[]
+	likedPosts:[]
+
 }
 export interface PostModel {
 	user: ObjectId
