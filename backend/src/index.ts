@@ -29,7 +29,6 @@ app.get('/currentuser',(req,res)=>{
 	const token = req.cookies.sessionId
 	if (token) {
 		//@ts-ignore
-		console.log(token,"token");
 		
 		jwt.verify(token, process.env.JWT_SECRET!, (err, decodedToken) => {
 			if(err)
