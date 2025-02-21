@@ -1,21 +1,35 @@
 import {z} from 'zod'
-export const UserRegisterSchema = z
-	.object({
-		username: z
-			.string()
-			.min(3, 'Username must be at least 3 characters')
-			.max(20, 'username cannot be more than 20 characters')
-			.trim(),
-		email: z.string().email('Invalid email format. please enter a valid email address').trim(),
-		firstname: z.string().min(3, 'Username must be at least 3 characters').trim(),
-		lastname: z.string().min(3, 'Username must be at least 3 characters').trim(),
-		password: z.string().min(5, 'Password must be at least 5 characters').trim(),
-		cpassword: z.string(),
-	})
-	.refine((data) => data.password === data.cpassword, {
-		message: "password not matching ",
-	  });
-	
+export const UserRegisterFormSchema = z
+  .object({
+    username: z
+      .string()
+      .min(3, { message: "username should atleast be 3 characters long" })
+      .trim(),
+    email: z.string().email({ message: "Invalid email address" }).trim(),
+    firstname: z
+      .string()
+      .min(3, { message: "firstname must be atleast 3 characters long" })
+      .max(30, { message: "cannot be more than 30 characters long" })
+      .trim(),
+    lastname: z
+      .string()
+      .min(3, { message: "lastname must be atleast 3 characters long" })
+      .max(30, { message: "cannot be more than 30 characters long" })
+      .trim(),
+    password: z
+      .string()
+      .min(1, { message: "please enter your password" })
+      .trim(),
+    confirmpassword: z
+      .string()
+      .min(1, { message: "please confirm your password" })
+      .trim(),
+  })
+  .refine((data) => data.password === data.confirmpassword, {
+    message: "confirm password  not matching with password",
+    path:['confirmpassword']
+  });
+
 
 export const userLoginWithUsername = z.object({
 	username: z.string().min(3, 'username must be at least 5 characters').trim(),
