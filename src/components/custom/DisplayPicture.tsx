@@ -9,7 +9,7 @@ type Props = {
   username: string
 }
 function DisplayPicture({ width, height, username }: Props) {
-  const [displaypicture, setDisplayPicture] = useState<string>('');
+  const [displaypicture, setDisplayPicture] = useState<string>('/nodp.svg');
   useEffect(() => {
     function fetchImage() {
       api.get(`/profile/displaypicture/${username}`, { responseType: 'blob' }).then((res) => {
@@ -19,7 +19,7 @@ function DisplayPicture({ width, height, username }: Props) {
       })
     }
     fetchImage()
-     return ()=>setDisplayPicture('')
+     return ()=>setDisplayPicture('/nodp.svg')
   }, [username])
   return (
     displaypicture && <Image className='rounded-full aspect-square object-fill' src={displaypicture} alt='DP' width={width} height={height} />
