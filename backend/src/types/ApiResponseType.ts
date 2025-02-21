@@ -7,6 +7,3 @@ export interface ApiResponseType {
 	message: string | any
 	redirect: string | null
 }
-export interface CustomRequest extends Request {
-	user?: object
-}
