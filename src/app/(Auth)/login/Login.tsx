@@ -21,8 +21,9 @@ import { loginWithEmail, loginWithUsername } from "@/validations/form"
 import { z } from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod"
 import Link from "next/link"
-import {clientapi} from "@/lib/api"
-import { headers } from "next/headers"
+import { clientapi } from "@/lib/api"
+import { useToast } from "@/hooks/use-toast"
+import { redirect } from "next/navigation"
 export function LoginPage() {
     return (
         <div className="container flex items-center justify-center h-screen w-screen">
@@ -69,6 +70,7 @@ export function LoginPage() {
 }
 
 function LoginWithUsername() {
+    const { toast } = useToast();
     const form = useForm<z.infer<typeof loginWithUsername>>({
         resolver: zodResolver(loginWithUsername),
         defaultValues: {
@@ -78,11 +80,22 @@ function LoginWithUsername() {
     })
     function onSubmit(values: z.infer<typeof loginWithUsername>) {
         clientapi.post('/auth/login', values, { headers: { 'content-type': 'application/x-www-form-urlencoded' } }).then((res) => {
-            console.log(res);
-
-        }).then((error) => {
-            console.error(error);
-
+            if (res.data.success) {
+            toast({
+                title: 'Login Success',
+                description: 'You have been successfully logged in',
+                variant: 'default'
+            })
+            setTimeout(()=>{
+                redirect('/')
+            },2000)
+        }
+        }).catch((error) => {
+            toast({
+                title: 'Login Failed',
+                description: error.response?.data?.message,
+                variant: 'destructive'
+            })  
         })
     }
     return <Form {...form}>
@@ -123,6 +136,7 @@ function LoginWithUsername() {
     </Form>
 }
 function LoginWithEmail() {
+    const { toast } = useToast();
     const form = useForm<z.infer<typeof loginWithEmail>>({
         resolver: zodResolver(loginWithEmail),
         defaultValues: {
@@ -131,9 +145,21 @@ function LoginWithEmail() {
         },
     })
     function onSubmit(values: z.infer<typeof loginWithEmail>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        console.log(values)
+        clientapi.post('/auth/login', values, { headers: { 'content-type': 'application/x-www-form-urlencoded' } }).then((res) => {
+            if (res.data.success) {
+                toast({
+                    title: 'Login Success',
+                    description: 'You have been successfully logged in',
+                    variant: 'default'
+                })
+            }
+        }).catch((error) => {
+            toast({
+                title: 'Login Failed',
+                description: error.response?.data?.message,
+                variant: 'destructive'
+            });
+        })
     }
     return <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">

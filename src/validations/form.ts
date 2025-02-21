@@ -36,6 +36,7 @@ export const RegisterFormSchema = z
       .min(1, { message: "please confirm your password" })
       .trim(),
   })
-  .refine((data) => data.password !== data.confirmpassword, {
-    message: "password not matching ",
+  .refine((data) => data.password === data.confirmpassword, {
+    message: "confirm password  not matching with password",
+    path:['confirmpassword']
   });

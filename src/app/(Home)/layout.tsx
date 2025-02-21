@@ -3,6 +3,9 @@ import { Inter } from "next/font/google";
 import "../globals.css";
 
 import SideBar from "@/components/custom/SideBar";
+import { Toaster } from "@/components/ui/toaster";
+
+import { getCurrentUser } from "@/lib/getCurrentUser";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -13,18 +16,21 @@ export const metadata: Metadata = {
   description: "A Social media to share your creativity and make friends",
 };
 
-export default function RootLayout({
+export  default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const {username}=await getCurrentUser()
+
   return (
     <html lang="en">
       <body className={inter.className}>
         <div className="grid grid-rows-[80px_1fr] md:grid-cols-[250px_1fr]">
-          <SideBar />
+          <SideBar username={username}/>
           {children}
         </div>
+        <Toaster />
       </body>
     </html>
   );
