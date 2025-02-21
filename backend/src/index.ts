@@ -3,6 +3,7 @@ import cors from 'cors'
 import morgan from 'morgan'
 import authRouter from './routes/auth.routes'
 import postRouter from './routes/post.routes'
+import profileRouter from './routes/profile.routes'
 import jwt from 'jsonwebtoken'
 import ConnectDB from './utils/connectDb.util'
 import cookieParser from 'cookie-parser'
@@ -25,6 +26,7 @@ app.use(express.urlencoded({extended: true}))
 
 //routes
 app.use('/auth', authRouter)
+
 app.get('/currentuser',(req,res)=>{
 	const token = req.cookies.sessionId
 	if (token) {
@@ -46,6 +48,8 @@ app.get('/currentuser',(req,res)=>{
 })
 app.use(getCurrentUser)
 app.use(isUserAuthenticated)
+//  app.use('/uploads', express.static('./uploads'))
+app.use(`/profile`,profileRouter)
 app.use('/post',postRouter)
 
 app.listen(PORT, () => {
