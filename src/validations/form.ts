@@ -40,3 +40,7 @@ export const RegisterFormSchema = z
     message: "confirm password  not matching with password",
     path:['confirmpassword']
   });
+
+  export const PostFormSchema=z.object({
+    caption:z.string().min(1,{message:`please enter a caption `,}).trim()
+  })
