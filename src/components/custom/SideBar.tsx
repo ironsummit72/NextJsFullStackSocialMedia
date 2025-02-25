@@ -1,9 +1,11 @@
 import Link from 'next/link'
 import React from 'react'
 import Image from 'next/image'
-import { Bell, Compass, Home, LogOut, MessageCircle, Settings, VideotapeIcon } from 'lucide-react'
+import { Bell, Compass, Home, LogOut, MessageCircle, Plus, Settings, VideotapeIcon } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import DisplayPicture from '@/components/custom/DisplayPicture'
+import CustomDropDown from './Dropdown/CustomDropDown'
+import CreatePostMenu from './Dropdown/CreatePostMenu'
 type Props={
     username:string
 }
@@ -22,7 +24,11 @@ function SideBar({username}:Props) {
                     <Link className='flex items-center gap-4' href={'/reels'}><VideotapeIcon/> <span className='hidden md:block'>Reels</span></Link>
                     <Link className='flex items-center gap-4' href={'/messages'}><MessageCircle/> <span className='hidden md:block'>Messages</span></Link>
                     <Link className='flex items-center gap-4' href={'/notifications'}><Bell/> <span className='hidden md:block'>Notifications</span></Link>
-                    <Link className='flex items-center gap-4' href={'/profile'}><DisplayPicture username={username} width={30} height={30}/> <span className='hidden md:block'>Profile</span></Link>
+                    <CustomDropDown content={<CreatePostMenu/>}>
+
+                    <div className='flex items-center gap-4'><Plus className='border border-2 border-black rounded-md '/> <span className='hidden md:block'>Create</span> </div>
+                    </CustomDropDown>
+                    <Link className='flex items-center gap-4' href={`/${username}`}><DisplayPicture username={username} width={30} height={30}/> <span className='hidden md:block'>Profile</span></Link>
                     <Link className='flex items-center gap-4' href={'/settings'}><Settings/> <span className='hidden md:block'>Settings</span></Link>
                     <Link className='flex items-center gap-4' href={'/logout'}><LogOut/> <span className='hidden md:block'>Logout</span></Link>
                 </div>
