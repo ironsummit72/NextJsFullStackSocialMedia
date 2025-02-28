@@ -1,6 +1,6 @@
-import mongoose, {Schema} from 'mongoose'
-import {UserModel} from '../types/DatabaseModelTypes'
-import {hashPassword} from '../utils/genHashPassword.util'
+import mongoose, { Schema } from 'mongoose'
+import { UserModel } from '../types/DatabaseModelTypes'
+import { hashPassword } from '../utils/genHashPassword.util'
 const userSchema = new Schema<UserModel>(
 	{
 		username: {
@@ -30,7 +30,7 @@ const userSchema = new Schema<UserModel>(
 			required: true,
 			trim: true,
 		},
-		posts: [{type: Schema.Types.ObjectId, ref: 'post', default: []}],
+		posts: [{ type: Schema.Types.ObjectId, ref: 'Post', default: [] }],
 		displayPicturePath: {
 			type: String,
 			default: null,
@@ -56,14 +56,14 @@ const userSchema = new Schema<UserModel>(
 				default: [],
 			},
 		],
-		savedPosts: [{type: mongoose.Schema.Types.ObjectId, ref: 'Post', default: []}],
-		taggedPosts: [{type: mongoose.Schema.Types.ObjectId, ref: 'Post', default: []}],
+		savedPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post', default: [] }],
+		taggedPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post', default: [] }],
 		bio: {
 			type: String,
 			default: '',
 		},
 	},
-	{timestamps: true},
+	{ timestamps: true },
 )
 userSchema.pre('save', async function (next) {
 	try {

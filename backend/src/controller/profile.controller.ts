@@ -28,7 +28,7 @@ export async function getDisplaypicture(req: Request, res: Response) {
                     });
                 }else{
                 const filename = dbResponse?.displayPicturePath
-                const filepath = path.join(__dirname, '..', '..', 'uploads', 'displaypicture', filename);
+                const filepath = path.join(__dirname, '..', '..', 'uploads', 'displaypicture','image', filename);
                 res.sendFile(filepath, (err) => {
                     if (err) {
                         const response: ApiResponse = {
