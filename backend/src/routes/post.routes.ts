@@ -1,12 +1,15 @@
 import {Router} from 'express'
-import {createPost, editPost, deletePost, getAllPosts, getPostById} from '../controller/post.controller'
+import {createPost, editPost, deletePost, getAllPostsByUsername, getPostById,recommendedPosts, likePost, savePost} from '../controller/post.controller'
 import upload from '../middleware/multer.middleware'
 const router = Router()
 
-router.post('/create',upload.array('posts'), createPost)
 router.get('/:id', getPostById)
-router.get('/', getAllPosts)
+router.get('/user/:username', getAllPostsByUsername)
+router.get('/r/recommended',recommendedPosts)
+//TODO: explore post
+router.post('/create',upload.array('posts'), createPost)
 router.patch('/:id', editPost)
+router.patch('/like/:id',likePost)
+router.patch('/save/:id',savePost)
 router.delete('/:id', deletePost)
-
 export default router
