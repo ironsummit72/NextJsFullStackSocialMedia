@@ -33,9 +33,9 @@ export const UserRegisterFormSchema = z
 
 export const userLoginWithUsername = z.object({
 	username: z.string().min(3, 'username must be at least 5 characters').trim(),
-	password: z.string().min(5, 'password must be at least 5 characters'),
+	password: z.string().min(4, 'password must be at least 4 characters'),
 })
 export const userLoginWithEmail = z.object({
 	email: z.string().email('Please Enter Your valid email address').trim(),
-	password: z.string().min(5, 'password must be at least 5 characters'),
+	password: z.string().min(4, 'password must be at least 4 characters'),
 })
