@@ -26,15 +26,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { clientapi } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
 import { AxiosError } from 'axios';
-
+import {USER} from '@/types/index'
 function CreatePostDialogContent() {
   const {toast}=useToast()
-  type USER = {
-    username: string,
-    fullName: string,
-    id: string
-  }
-
   const [user, setUser] = useState<USER | null>(null)
   const [isDragActive, setIsDragActive] = useState<boolean>(false);
   const [files, setFiles] = useState<File[]>([]);

@@ -12,10 +12,10 @@ type Props = {
   children: React.ReactNode
   content: React.ReactNode,
   title: string,
-  className:string
-  open:boolean
+  className?:string
+  open?:boolean
   onOpenChange?:(isOpen:boolean)=>void
-  onIntaractOutside:(e:Event)=>void
+  onIntaractOutside?:(e:Event)=>void
 }
 function CustomDialog({ children, title, content,className ,open,onOpenChange,onIntaractOutside }: Props) {
   return (
