@@ -4,6 +4,7 @@ import morgan from 'morgan'
 import authRouter from './routes/auth.routes'
 import postRouter from './routes/post.routes'
 import profileRouter from './routes/profile.routes'
+import contentRouter from './routes/content.routes'
 import jwt from 'jsonwebtoken'
 import ConnectDB from './utils/connectDb.util'
 import cookieParser from 'cookie-parser'
@@ -48,8 +49,8 @@ app.get('/currentuser',(req,res)=>{
 })
 app.use(getCurrentUser)
 app.use(isUserAuthenticated)
-//  app.use('/uploads', express.static('./uploads'))
 app.use(`/profile`,profileRouter)
+app.use('/content',contentRouter)
 app.use('/post',postRouter)
 
 app.listen(PORT, () => {
