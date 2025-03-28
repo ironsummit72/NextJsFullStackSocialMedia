@@ -68,7 +68,7 @@ export async function savePost(req: Request, res: Response) { }
 export async function recommendedPosts(req: Request, res: Response) {
 	const userID = req.user?.id
 	if (userID) {
-		const postsResponse = await postModel.find({ likes: { $nin: [userID] } });
+		const postsResponse = await postModel.find({ likes: { $nin: [userID] } }).populate('user','-password -posts',);
 		if (postsResponse) {
 			const response: ApiResponse = {
 				data: postsResponse,
