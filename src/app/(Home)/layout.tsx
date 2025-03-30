@@ -18,11 +18,10 @@ export const metadata: Metadata = {
 
 export  default async function RootLayout({
   children,
-  modal,
+
   suggession
 }: Readonly<{
   children: React.ReactNode;
-  modal: React.ReactNode;
   suggession:React.ReactNode
 }>) {
   const {username}=await getCurrentUser()
@@ -38,7 +37,7 @@ export  default async function RootLayout({
           {suggession}
           </div>
           </div>
-          {modal}
+         
         </div>
         <Toaster />
       </body>

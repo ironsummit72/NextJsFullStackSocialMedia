@@ -9,7 +9,7 @@ async function Explore() {
   const response = await api.get('/post/r/recommended', { headers: { cookie: headersList.get('cookie') } });
   const { data } = await response.data;
   return (
-    <div className='grid grid-cols-3 gap-3 mt-5' >
+    <div className='grid grid-cols-3 gap-3 mt-5 ' >
       {data.map((postData: PostData) => {
         if (postData.content[0].mimetype.split('/')[0] === 'video') {
           return <Link key={postData._id} href={`/post/${postData._id}`}><Video filename={`${postData.content[0].filename}`}></Video></Link>
