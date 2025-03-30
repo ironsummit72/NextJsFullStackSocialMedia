@@ -10,9 +10,8 @@ export async function getDisplaypicture(req: Request, res: Response) {
         try {
             const dbResponse = await userModel.findOne({ username });
             if (dbResponse) {
-                if(dbResponse.displayPicturePath===null)
-                {
-                    const filepath = path.join(__dirname, '..','..',  'public', 'nodp.svg');
+                if (dbResponse.displayPicturePath === null) {
+                    const filepath = path.join(__dirname, '..', '..', 'public', 'nodp.svg');
                     res.sendFile(filepath, (err) => {
                         if (err) {
                             const response: ApiResponse = {
@@ -26,23 +25,23 @@ export async function getDisplaypicture(req: Request, res: Response) {
                             res.status(404).json(response);
                         }
                     });
-                }else{
-                const filename = dbResponse?.displayPicturePath
-                const filepath = path.join(__dirname, '..', '..', 'uploads', 'displaypicture','image', filename);
-                res.sendFile(filepath, (err) => {
-                    if (err) {
-                        const response: ApiResponse = {
-                            data: null,
-                            message: "file not found",
-                            redirect: null,
-                            statusCode: 404,
-                            statusMessage: 'not found',
-                            success: false
+                } else {
+                    const filename = dbResponse?.displayPicturePath
+                    const filepath = path.join(__dirname, '..', '..', 'uploads', 'displaypicture', 'image', filename);
+                    res.sendFile(filepath, (err) => {
+                        if (err) {
+                            const response: ApiResponse = {
+                                data: null,
+                                message: "file not found",
+                                redirect: null,
+                                statusCode: 404,
+                                statusMessage: 'not found',
+                                success: false
+                            }
+                            res.status(404).json(response);
                         }
-                        res.status(404).json(response);
-                    }
-                });
-            }
+                    });
+                }
             } else {
                 const response: ApiResponse = {
                     data: null, message: "user not found",
@@ -126,4 +125,32 @@ export async function uploadDisplayPicture(req: Request, res: Response) {
 export async function createBio(req: Request, res: Response) {
 }
 export async function updateProfileInfo(req: Request, res: Response) {
+}
+export async function getUserInfo(req: Request, res: Response) {
+    const { username } = req.params;
+    if (username) {
+        const userInfo = await userModel.findOne({ username }).populate('posts').select('-password');
+        if (userInfo) {
+            const response: ApiResponse = {
+                data: userInfo,
+                message: 'User Information',
+                redirect: null,
+                statusCode: 200,
+                statusMessage: 'success',
+                success: true
+            }
+            res.status(200).json(response)
+        } else {
+            const response: ApiResponse = {
+                data: userInfo,
+                message: 'User Not Found',
+                redirect: null,
+                statusCode: 404,
+                statusMessage: 'not found',
+                success: false
+            }
+            res.status(404).json(response)
+        }
+    }
+
 }
