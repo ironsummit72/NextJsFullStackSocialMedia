@@ -4,6 +4,7 @@ import ApiResponse from "../utils/ApiResponse.util";
 import path from "path";
 
 
+
 export async function getDisplaypicture(req: Request, res: Response) {
     const { username } = req.params
     if (username) {
@@ -151,6 +152,31 @@ export async function getUserInfo(req: Request, res: Response) {
             }
             res.status(404).json(response)
         }
+    }
+
+}
+export async function suggestUser(req: Request, res: Response) {
+    const {limit}=req.query
+    try {
+        const loggedInUserId = req.user?.id
+        const user = await userModel.findById(loggedInUserId);
+        if (user) {
+            const suggestedUsers = await userModel.find({
+                _id: { $nin: [loggedInUserId, ...user.following] },
+            }).limit(Number(limit)??5).select('-password');
+            const response: ApiResponse = {
+                success: true,
+                data: suggestedUsers,
+                message: "suggested user",
+                redirect: null,
+                statusCode: 200,
+                statusMessage: "success"
+            }
+            res.status(200).json(response);
+        }
+    } catch (error) {
+        const errorResponse: ApiResponse = { data: null, message: "something went wrong", redirect: null, statusCode: 500, statusMessage: "failed", success: false }
+        res.status(500).json(errorResponse)
     }
 
 }
