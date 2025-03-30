@@ -18,10 +18,12 @@ export const metadata: Metadata = {
 
 export  default async function RootLayout({
   children,
-  modal
+  modal,
+  suggession
 }: Readonly<{
   children: React.ReactNode;
   modal: React.ReactNode;
+  suggession:React.ReactNode
 }>) {
   const {username}=await getCurrentUser()
 
@@ -30,7 +32,12 @@ export  default async function RootLayout({
       <body className={inter.className}>
         <div className="grid grid-rows-[80px_1fr] md:grid-cols-[250px_1fr]">
           <SideBar username={username}/>
+          <div className="md:grid md:grid-cols-[60vw_1fr]">
           {children}
+          <div className="hidden md:block">
+          {suggession}
+          </div>
+          </div>
           {modal}
         </div>
         <Toaster />

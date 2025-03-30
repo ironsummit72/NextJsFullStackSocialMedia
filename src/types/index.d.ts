@@ -8,7 +8,7 @@ export interface USER  {
     username:string,
     email:string,
     firstName:string,
-    lastname:string,
+    lastName:string,
     displayPicturePath:string,
 
   }
