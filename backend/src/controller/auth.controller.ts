@@ -77,3 +77,16 @@ export async function handleLogin(req: Request, res: Response) {
 		}
 	}
 }
+export async function logoutUser(req: Request, res: Response) {
+    res.clearCookie('sessionId');
+    const response: ApiResponse = {
+        data: null,
+        message: 'user logout successfully',
+        redirect: '/login',
+        statusCode: 200,
+        statusMessage: 'success',
+        success: true
+
+    }
+    res.status(200).json(response)
+}
