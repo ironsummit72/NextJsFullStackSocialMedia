@@ -1,5 +1,6 @@
 import '@/app/globals.css'
 import SideBar from '@/components/custom/SideBar'
+import { Toaster } from '@/components/ui/toaster'
 import { getCurrentUser } from '@/lib/getCurrentUser'
 export const metadata = {
   title: 'Next.js',
@@ -26,7 +27,9 @@ export default async function RootLayout({
           </div>
           </div>
           {modal}
+          <Toaster/>
         </div>
+
       </body>
     </html>
   )
