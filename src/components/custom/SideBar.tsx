@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import DisplayPicture from '@/components/custom/DisplayPicture'
 import CustomDropDown from './Dropdown/CustomDropDown'
 import CreatePostMenu from './Dropdown/CreatePostMenu'
+import CustomAlertDialog from './AlertDialog/CustomAlertDialog'
 type Props={
     username:string
 }
@@ -30,7 +31,9 @@ function SideBar({username}:Props) {
                     </CustomDropDown>
                     <Link title='profile' className='flex items-center gap-4' href={`/${username}`}><DisplayPicture username={username} width={30} height={30}/> <span className='hidden md:block'>Profile</span></Link>
                     <Link className='flex items-center gap-4' href={'/settings'}><Settings/> <span className='hidden md:block'>Settings</span></Link>
-                    <Link className='flex items-center gap-4' href={'/logout'}><LogOut/> <span className='hidden md:block'>Logout</span></Link>
+                    <CustomAlertDialog>
+                    <h1 className='flex items-center gap-4' ><LogOut/> <span className='hidden md:block'>Logout</span></h1>
+                    </CustomAlertDialog>
                 </div>
             </div>
             {/* top navbar */}
