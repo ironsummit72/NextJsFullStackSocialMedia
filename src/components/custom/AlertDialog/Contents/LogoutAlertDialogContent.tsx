@@ -23,7 +23,7 @@ function LogoutAlertDialogContent({ title, description }: Props) {
                 title: "Logout",
                 description: "Logout successfully"
             })
-            router.refresh()
+            router.push('/login')
         }).catch((err) => {
             toast({
                 title: "Error",

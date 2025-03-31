@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import { PostData, UserData } from "@/types"
 import { Button } from "@/components/ui/button"
 import { UserPlus } from "lucide-react"
+import { toast } from "@/hooks/use-toast"
 
 type Props = {
     username: string
@@ -22,6 +23,14 @@ export default function HoverCardContentProfile({ username }: Props) {
             setUser(res.data.data);
         })
     }, [username])
+
+     const onHandleFollow=()=>{
+        clientapi.post(`/user/follow/${user?._id}`).then((res)=>{
+            toast({title:"follow",
+                description:res.data?.message
+            })
+        })
+     }
 
     return <div className="flex flex-col  gap-4">
         <div className="flex items-center gap-4">
@@ -58,6 +67,6 @@ export default function HoverCardContentProfile({ username }: Props) {
             })}
 
         </div>
-        <Button><UserPlus/> Follow</Button>
+        <Button onClick={onHandleFollow}><UserPlus/> Follow</Button>
     </div>
 }
