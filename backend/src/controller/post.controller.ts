@@ -66,30 +66,62 @@ export async function likePost(req: Request, res: Response) { }
 export async function savePost(req: Request, res: Response) { }
 
 export async function recommendedPosts(req: Request, res: Response) {
-	const userID = req.user?.id
-	if (userID) {
-		const postsResponse = await postModel.find({ likes: { $nin: [userID] } }).populate('user','-password -posts',);
-		if (postsResponse) {
-			const response: ApiResponse = {
-				data: postsResponse,
-				message: "Recommended Posts",
-				redirect: null,
-				statusCode: 200,
-				statusMessage: 'success',
-				success: true,
+	try {
+		const userID = req.user?.id;
+		const page = Number(req.query?.page);
+		const limit = Number(req.query?.limit);
+		const startIndex = (page - 1) * limit;
+		const endPage = Math.ceil(await postModel.find({ likes: { $nin: [userID] } }).populate('user', '-password -posts').countDocuments() / limit);
+		if (userID) {
+			if (page && limit) {
+				const postsResponse = await postModel.find({ likes: { $nin: [userID] } }).populate('user', '-password -posts',).skip(startIndex).limit(limit);
+				if (postsResponse) {
+					const response: ApiResponse = {
+						data: { postsResponse, endPage },
+						message: "Recommended Posts",
+						redirect: null,
+						statusCode: 200,
+						statusMessage: 'success',
+						success: true,
+					}
+					res.status(200).json(response);
+				}
+			} else {
+				const postsResponse = await postModel.find({ likes: { $nin: [userID] } }).populate('user', '-password -posts',);
+				if (postsResponse) {
+					const response: ApiResponse = {
+						data: postsResponse,
+						message: "Recommended Posts",
+						redirect: null,
+						statusCode: 200,
+						statusMessage: 'success',
+						success: true,
+					}
+					res.status(200).json(response);
+				}
 			}
-			res.status(200).json(response);
 		}
-	}
-	else {
+		else {
+			const response: ApiResponse = {
+				data: null,
+				message: "user not found",
+				redirect: null,
+				statusCode: 404,
+				statusMessage: "not found",
+				success: false
+			}
+			res.status(404).json(response)
+		}
+
+	} catch (error) {
 		const response: ApiResponse = {
 			data: null,
-			message: "user not found",
+			message: "something went wrong",
 			redirect: null,
-			statusCode: 404,
-			statusMessage: "not found",
+			statusCode: 500,
+			statusMessage: "Server Error",
 			success: false
 		}
-		res.status(404).json(response)
+		res.status(500).json(response)
 	}
 }
