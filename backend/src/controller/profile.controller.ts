@@ -156,14 +156,14 @@ export async function getUserInfo(req: Request, res: Response) {
 
 }
 export async function suggestUser(req: Request, res: Response) {
-    const {limit}=req.query
+    const { limit } = req.query
     try {
         const loggedInUserId = req.user?.id
         const user = await userModel.findById(loggedInUserId);
         if (user) {
             const suggestedUsers = await userModel.find({
                 _id: { $nin: [loggedInUserId, ...user.following] },
-            }).limit(Number(limit)??5).select('-password');
+            }).limit(Number(limit) ?? 5).select('-password');
             const response: ApiResponse = {
                 success: true,
                 data: suggestedUsers,
@@ -179,4 +179,42 @@ export async function suggestUser(req: Request, res: Response) {
         res.status(500).json(errorResponse)
     }
 
+}
+
+export async function updateBio(req: Request, res: Response) {
+    try {
+        const { username } = req.params;
+        const { bio } = req.body
+        if (username && bio) {
+            const dbResponse = await userModel.updateOne({ username }, { bio });
+            if (dbResponse.modifiedCount = 1) {
+                const response: ApiResponse = {
+                    data: null, message: "bio updated successfully",
+                    redirect: null,
+                    statusCode: 200,
+                    statusMessage: 'succcess',
+                    success: true
+                }
+                res.status(200).json(response)
+            }
+        } else {
+            const response: ApiResponse = {
+                data: null, message: "either username or bio is missing ", redirect: null,
+                statusCode: 400,
+                statusMessage: 'error',
+                success: false
+            }
+            res.status(400).json(response)
+        }
+    } catch (err) {
+        const error = err as Error
+        const response: ApiResponse = {
+            data: null,
+            message: error.message,
+            redirect: null, statusCode: 500,
+            statusMessage: 'error',
+            success: false
+        }
+        res.status(500).json(response);
+    }
 }
