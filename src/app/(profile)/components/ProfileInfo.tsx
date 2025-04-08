@@ -62,7 +62,7 @@ function ProfileInfo({ username, stories, poststab }: Props) {
                 {/* {Profile displaypicture and profile meta data} */}
                 <DisplayPicture username={username} width={170} height={170} />
                 <div className="flex flex-col gap-5 mx-6 ">
-                    <div className="flex gap-5 items-center"><h1 className="text-2xl">{profileInfo?.username}</h1>{username === user?.username ? <Button >Edit Profile</Button> : <Button onClick={handleFollow}>{isFollowing ? "Following" : "Follow"}</Button>} <Button>Message</Button> </div>
+                    <div className="flex gap-5 items-center"><h1 className="text-2xl">{profileInfo?.username}</h1>{username === user?.username ? <Button asChild ><Link href={'/accounts/edit'}>Edit Profile</Link></Button> : <Button onClick={handleFollow}>{isFollowing ? "Following" : "Follow"}</Button>} <Button>Message</Button> </div>
                     <div className="Info flex items-center gap-2 justify-between p-2">
                         <div className="Post flex gap-1 items-center ">
                             <h1 className="font-bold">{profileInfo?.posts.length}</h1>
