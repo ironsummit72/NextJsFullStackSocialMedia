@@ -1,14 +1,14 @@
 import { z } from "zod"
 
 export const loginWithUsername = z.object({
-    username: z.string().min(2, {
-        message: "Username must be at least 2 characters.",
-    }),
-    password: z.string().min(4, { message: 'Password must be at least 4 characters' })
+  username: z.string().min(2, {
+    message: "Username must be at least 2 characters.",
+  }),
+  password: z.string().min(4, { message: 'Password must be at least 4 characters' })
 })
 export const loginWithEmail = z.object({
-    email: z.string().email({ message: 'please enter a valid email address' }),
-    password: z.string().min(4, { message: 'Password must be at least 4 characters' })
+  email: z.string().email({ message: 'please enter a valid email address' }),
+  password: z.string().min(4, { message: 'Password must be at least 4 characters' })
 })
 export const RegisterFormSchema = z
   .object({
@@ -38,9 +38,13 @@ export const RegisterFormSchema = z
   })
   .refine((data) => data.password === data.confirmpassword, {
     message: "confirm password  not matching with password",
-    path:['confirmpassword']
+    path: ['confirmpassword']
   });
 
-  export const PostFormSchema=z.object({
-    caption:z.string().min(1,{message:`please enter a caption `,}).trim()
-  })
+export const PostFormSchema = z.object({
+  caption: z.string().min(1, { message: `please enter a caption `, }).trim()
+})
+
+export const BioSchema = z.object({
+  bio: z.string().min(1, { message: "please write a bio", }).max(150, { message: "please write your bio within 150 characters" }).trim()
+})

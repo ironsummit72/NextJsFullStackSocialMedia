@@ -10,7 +10,11 @@ export interface USER  {
     firstName:string,
     lastName:string,
     displayPicturePath:string,
-
+    bio:string
+    likedPosts:PostData[],
+    savedPosts:PostData[],
+    followers:UserData[],
+    following:UserData[]
   }
   type contentType={
     fieldname: string,
