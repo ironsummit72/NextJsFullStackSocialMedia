@@ -1,3 +1,4 @@
+
 import { Request, Response } from 'express'
 import postModel from '../models/posts.model'
 import ApiResponse from '../utils/ApiResponse.util'
@@ -36,29 +37,63 @@ export async function getPostById(req: Request, res: Response) { }
 
 export async function getAllPostsByUsername(req: Request, res: Response) {
 	const { username } = req.params;
-	const postsByUser = await userModel.findOne({ username }, { password: 0, email: 0 }).populate({ path: 'posts' })
-	if (postsByUser) {
-		const response: ApiResponse = {
-			data: postsByUser,
-			message: `All Posts related to User`,
-			redirect: null,
-			statusCode: 200,
-			statusMessage: 'success',
-			success: true
+	const page = Number(req.query?.page);
+	const limit = Number(req.query?.limit);
+	const startIndex = (page - 1) * limit;
+	
+
+
+	if (username) {
+		const userId = await userModel.findOne({ username }).select('-password');
+		if (userId) {
+			if (page && limit) {
+				const endPage=Math.ceil(await postModel.find({user:userId.id}).countDocuments()/limit)
+				const postData = await postModel.find({ user: userId.id }).skip(startIndex).limit(limit);
+				if (postData) {
+					const response: ApiResponse = {
+						data: { postData, endPage },
+						message: "Recommended Posts",
+						redirect: null,
+						statusCode: 200,
+						statusMessage: 'success',
+						success: true,
+					}
+					res.status(200).json(response);
+				} else {
+					const response: ApiResponse = {
+						data: null, message: "no post found",
+						redirect: null,
+						statusCode: 404,
+						statusMessage: 'not found',
+						success: false
+					}
+					res.status(404).json(response);
+				}
+			} else {
+				const response: ApiResponse = {
+					data: null,
+					message: "please provide limit and page query params ",
+					redirect: null,
+					statusCode: 400,
+					statusMessage: 'failed',
+					success: false
+				}
+				res.status(400).json(response);
+			}
 		}
-		res.status(200).json(response);
-	}
-	else {
+	} else {
 		const response: ApiResponse = {
 			data: null,
-			message: 'user not found',
-			statusCode: 404,
-			success: false,
+			message: "username not found",
 			redirect: null,
-			statusMessage: "not found"
+			statusCode: 404,
+			statusMessage: "Not Found",
+			success: false
 		}
+
 		res.status(404).json(response)
 	}
+
 
 }
 export async function deletePost(req: Request, res: Response) { }
