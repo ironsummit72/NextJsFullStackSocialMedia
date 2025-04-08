@@ -19,7 +19,6 @@ function PostsHome({ params }: Props) {
     async function fetchData(pageNumber: number = 1) {
         const response = await clientapi.get(`/post/user/${username}?page=${pageNumber}&limit=10`)
         setData(response.data.data.postData)
-        console.log('dp', response.data.data)
         setEndPage(response.data.data.endPage)
     }
     useEffect(() => {
