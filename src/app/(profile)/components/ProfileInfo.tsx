@@ -89,7 +89,7 @@ function ProfileInfo({ username, stories, poststab }: Props) {
                         <h1 className="font-medium text-lg">{profileInfo?.firstName} {profileInfo?.lastName}</h1>
                         <Collapsible className='w-80' defaultOpen={collapsibleIsOpen} open={collapsibleIsOpen} onOpenChange={setCollapsibleIsOpen} >
                             {profileInfo?.bio.length! > 30 ?<div>
-                                <CollapsibleTrigger><Linkify text={profileInfo?.bio.substring(0,30)!}/><span className='text-gray-500 font-semibold'> {collapsibleIsOpen?"":"...more"}</span></CollapsibleTrigger> <CollapsibleContent onClick={()=>{setCollapsibleIsOpen((prev)=>!prev)}}><Linkify text={profileInfo?.bio.substring(30,profileInfo.bio.length)!}/></CollapsibleContent>
+                                <CollapsibleTrigger className='flex gap-1'><Linkify text={profileInfo?.bio.substring(0,30)!}/><span className='text-gray-500 font-semibold'> {collapsibleIsOpen?"":"...more"}</span></CollapsibleTrigger> <CollapsibleContent onClick={()=>{setCollapsibleIsOpen((prev)=>!prev)}}><Linkify text={profileInfo?.bio.substring(30,profileInfo.bio.length)!}/></CollapsibleContent>
                             </div> : <CollapsibleTrigger>{profileInfo?.bio}</CollapsibleTrigger>}
                         </Collapsible>
                     </div>
