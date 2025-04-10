@@ -9,6 +9,13 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { usePathname, useRouter } from 'next/navigation'
 import { Clapperboard, Grid, Tags } from 'lucide-react'
 import { getCurrentUserClient } from '@/lib/getCurrentUserClient'
+import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from "@/components/ui/collapsible"
+import Linkify from '@/components/custom/Linkify'
+import linkify from '@/components/custom/Linkify'
 interface UserInfo extends UserData {
     followers: []
     following: [],
@@ -22,7 +29,8 @@ type Props = {
 function ProfileInfo({ username, stories, poststab }: Props) {
     const [profileInfo, setProfileInfo] = useState<UserInfo>();
     const [isFollowing, setIsFollowing] = useState<boolean>();
-    const [reload, setReload] = useState(false);
+    const [collapsibleIsOpen,setCollapsibleIsOpen]=useState<boolean>(false);
+    const [reload, setReload] = useState<boolean>(false);
     const pathname = usePathname()
     const router = useRouter()
     const [user, setUser] = useState<USER | null>(null);
@@ -79,6 +87,11 @@ function ProfileInfo({ username, stories, poststab }: Props) {
                     </div>
                     <div>
                         <h1 className="font-medium text-lg">{profileInfo?.firstName} {profileInfo?.lastName}</h1>
+                        <Collapsible className='w-80' defaultOpen={collapsibleIsOpen} open={collapsibleIsOpen} onOpenChange={setCollapsibleIsOpen} >
+                            {profileInfo?.bio.length! > 30 ?<div>
+                                <CollapsibleTrigger><Linkify text={profileInfo?.bio.substring(0,30)!}/><span className='text-gray-500 font-semibold'> {collapsibleIsOpen?"":"...more"}</span></CollapsibleTrigger> <CollapsibleContent onClick={()=>{setCollapsibleIsOpen((prev)=>!prev)}}><Linkify text={profileInfo?.bio.substring(30,profileInfo.bio.length)!}/></CollapsibleContent>
+                            </div> : <CollapsibleTrigger>{profileInfo?.bio}</CollapsibleTrigger>}
+                        </Collapsible>
                     </div>
                 </div>
             </div>
