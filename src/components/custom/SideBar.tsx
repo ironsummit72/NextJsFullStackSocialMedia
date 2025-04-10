@@ -30,7 +30,7 @@ function SideBar({username}:Props) {
                     <div className='flex items-center gap-4'><Plus className='border border-2 border-black rounded-md '/> <span className='hidden md:block'>Create</span> </div>
                     </CustomDropDown>
                     <Link title='profile' className='flex items-center gap-4' href={`/${username}`}><DisplayPicture username={username} width={30} height={30}/> <span className='hidden md:block'>Profile</span></Link>
-                    <Link className='flex items-center gap-4' href={'/settings'}><Settings/> <span className='hidden md:block'>Settings</span></Link>
+                    <Link className='flex items-center gap-4' href={'/accounts/edit'}><Settings/> <span className='hidden md:block'>Settings</span></Link>
                     <CustomAlertDialog>
                     <h1 className='flex items-center gap-4' ><LogOut/> <span className='hidden md:block'>Logout</span></h1>
                     </CustomAlertDialog>
