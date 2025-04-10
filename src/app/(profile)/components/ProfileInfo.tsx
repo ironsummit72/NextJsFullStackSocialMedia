@@ -46,7 +46,7 @@ function ProfileInfo({ username, stories, poststab }: Props) {
         clientapi.get(`/profile/info/${username}`).then((res) => {
             setProfileInfo(res.data.data);
         })
-    }, [reload])
+    }, [reload,username])
     useEffect(() => {
         if (!profileInfo) return;
         clientapi.get(`/user/isfollowing/${profileInfo?._id}`).then((res) => {
