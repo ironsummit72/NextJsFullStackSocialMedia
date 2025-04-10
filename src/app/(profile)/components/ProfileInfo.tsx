@@ -15,7 +15,6 @@ import {
     CollapsibleTrigger,
 } from "@/components/ui/collapsible"
 import Linkify from '@/components/custom/Linkify'
-import linkify from '@/components/custom/Linkify'
 interface UserInfo extends UserData {
     followers: []
     following: [],
