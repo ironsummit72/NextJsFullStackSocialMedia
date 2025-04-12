@@ -5,6 +5,7 @@ import path from "path";
 
 
 
+
 export async function getDisplaypicture(req: Request, res: Response) {
     const { username } = req.params
     if (username) {
@@ -217,4 +218,120 @@ export async function updateBio(req: Request, res: Response) {
         }
         res.status(500).json(response);
     }
+}
+export async function getFollowers(req: Request, res: Response) {
+    try {
+        const { username } = req.params;
+        const page = Number(req.query.page);
+        const limit = Number(req.query.limit);
+        console.log("page", page, "limit", limit);
+        const startIndex = (page - 1) * limit;
+        if (page && limit) {
+            if (username) {
+                const dbResponse = await userModel.findOne({ username }).populate({ path: 'followers', select: '-password', options: { skip: startIndex, limit } }).select('-password -_id -posts -following -username -email -firstName -lastName -displayPicturePath');
+                const endPage = Math.ceil(dbResponse!['followers'].length / limit)
+                if (dbResponse) {
+                    const response: ApiResponse = {
+                        data: { dbResponse, endPage },
+                        message: 'here is the followers data',
+                        redirect: null,
+                        statusCode: 200,
+                        statusMessage: 'success',
+                        success: true
+                    }
+                    res.status(200).json(response)
+                }
+            } else {
+                const response: ApiResponse = {
+                    data: null,
+                    message: 'please provide username as query params ',
+                    redirect: null,
+                    statusCode: 400,
+                    statusMessage: "failed",
+                    success: false
+                }
+                res.status(400).json(response)
+            }
+        } else {
+            const response: ApiResponse = {
+                data: null,
+                message: 'please provide page and limit as query string ',
+                redirect: null,
+                statusCode: 400,
+                statusMessage: 'failed',
+                success: false
+            }
+            res.status(400).json(response)
+        }
+    } catch (err) {
+        const error = err as Error;
+        const response: ApiResponse = {
+            data: null,
+            message: error.message,
+            redirect: null,
+            statusCode: 500,
+            statusMessage: 'error',
+            success: false
+        }
+        res.status(500).json(response)
+    }
+
+}
+export async function getFollowing(req: Request, res: Response) {
+    try {
+        const { username } = req.params;
+        const page = Number(req.query.page);
+        const limit = Number(req.query.limit);
+        console.log("page", page, "limit", limit);
+        const startIndex = (page - 1) * limit;
+        if (page && limit) {
+            if (username) {
+                const dbResponse = await userModel.findOne({ username }).populate({ path: 'following', select: '-password', options: { skip: startIndex, limit } }).select('-password -_id -posts -followers -username -email -firstName -lastName -displayPicturePath');
+                const endPage = Math.ceil(dbResponse!['following'].length / limit)
+                if (dbResponse) {
+                    const response: ApiResponse = {
+                        data: { dbResponse, endPage },
+                        message: 'here is the following data',
+                        redirect: null,
+                        statusCode: 200,
+                        statusMessage: 'success',
+                        success: true
+                    }
+                    res.status(200).json(response)
+                }
+            } else {
+                const response: ApiResponse = {
+                    data: null,
+                    message: 'please provide username as query params ',
+                    redirect: null,
+                    statusCode: 400,
+                    statusMessage: "failed",
+                    success: false
+                }
+                res.status(400).json(response)
+            }
+        } else {
+            const response: ApiResponse = {
+                data: null,
+                message: 'please provide page and limit as query string ',
+                redirect: null,
+                statusCode: 400,
+                statusMessage: 'failed',
+                success: false
+            }
+            res.status(400).json(response)
+        }
+    } catch (err) {
+        const error = err as Error;
+        const response: ApiResponse = {
+            data: null,
+            message: error.message,
+            redirect: null,
+            statusCode: 500,
+            statusMessage: 'error',
+            success: false
+        }
+        res.status(500).json(response)
+    }
+
 }
