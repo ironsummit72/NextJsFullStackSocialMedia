@@ -47,9 +47,9 @@ function Followers() {
         <div className='flex flex-col w-full items-center'>
           {data?.dbResponse.followers.map((data) => {
             return <HoverCardProfile key={data._id} username={data.username}>
-              <div className='w-[90%]'>
+              <Link href={`/${data.username}`} className='w-[90%]'>
               <Content username={data.username} data={data} />
-              </div>
+              </Link>
             </HoverCardProfile>
           })}
         </div>
@@ -57,10 +57,7 @@ function Followers() {
     </Dialog>
   )
 }
-
 export default Followers
-
-
 type ContentProps = {
   username: string,
   data: UserData
