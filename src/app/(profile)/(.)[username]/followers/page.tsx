@@ -11,33 +11,31 @@ import { Button } from '@/components/ui/button'
 import { useToast } from '@/hooks/use-toast'
 import { getCurrentUserClient } from '@/lib/getCurrentUserClient'
 import Link from 'next/link'
+import { InView } from 'react-intersection-observer'
+import Spinner from '@/components/custom/Spinner'
 
-interface customUserData extends UserData {
-  followers: UserData[]
-}
 
-interface Data {
-  dbResponse: customUserData,
-  endPage: number
-}
 
 function Followers() {
   const pathname = usePathname().split('/')[1];
-  const [data, setData] = useState<Data>()
+  const [data, setData] = useState<UserData[]>([])
+  const [page, setPage] = useState<number>(2);
+  const [endPage, setEndPage] = useState<number>(0)
+
 
   const router = useRouter()
   const onHandleClose = () => {
     router.back()
   }
 
+  async function fetchData(pageNumber: number) {
+    const response = await clientapi.get(`/profile/followers/${pathname}?page=${pageNumber}&limit=10`)
+    console.log('followers data', response.data.data);
+    setData(response.data.data.dbResponse.followers)
+    setEndPage(response.data.data.endPage)
+  }
   useEffect(() => {
-    clientapi.get(`/profile/followers/${pathname}?page=1&limit=10`).then((res) => {
-      console.log(res.data);
-      setData(res.data.data)
-    }).catch((error) => {
-      console.error(error);
-
-    })
+    fetchData(1);
   }, [])
 
   return (
@@ -45,13 +43,28 @@ function Followers() {
       <DialogContent>
         <DialogTitle className='text-center'><span className='text-lg font-bold'>Followers</span></DialogTitle>
         <div className='flex flex-col w-full items-center'>
-          {data?.dbResponse.followers.map((data) => {
-            return <HoverCardProfile key={data._id} username={data.username}>
-              <Link href={`/${data.username}`} className='w-[90%]'>
-              <Content username={data.username} data={data} />
+          {data?.map((userdata) => {
+            return <HoverCardProfile key={userdata._id} username={userdata.username}>
+              <Link href={`/${userdata.username}`} className='w-[90%]'>
+                <Content username={userdata.username} data={userdata} />
               </Link>
             </HoverCardProfile>
           })}
+          <InView as={'div'} onChange={async () => {
+          if (endPage >= page) {
+            const response = await clientapi.get(`/profile/followers/${pathname}?page=${page}&limit=10`)
+            setData((data) => [...data!, ...response.data.data.dbResponse.followers])
+            setPage((page) => page + 1)
+          }
+        }}>
+        </InView>
+        <div className='w-full flex items-center  justify-center gap-3'>
+          {page >= endPage ? <h1>{`that's all folks ${endPage}`}</h1> : <>
+            <Spinner />
+            <h1>loading...</h1>
+          </>
+          }
+        </div>
         </div>
       </DialogContent>
     </Dialog>
