@@ -11,51 +11,66 @@ import { Button } from '@/components/ui/button'
 import { useToast } from '@/hooks/use-toast'
 import { getCurrentUserClient } from '@/lib/getCurrentUserClient'
 import Link from 'next/link'
+import { InView } from 'react-intersection-observer'
+import Spinner from '@/components/custom/Spinner'
 
-interface customUserData extends UserData {
-  followers: UserData[]
-}
-interface Data {
-  dbResponse: customUserData,
-  endPage: number
-}
+
 
 function Following() {
   const pathname = usePathname().split('/')[1];
-  const [data, setData] = useState<Data>()
+  const [data, setData] = useState<UserData[]>([])
+  const [page, setPage] = useState<number>(2);
+  const [endPage, setEndPage] = useState<number>(0)
+
+
   const router = useRouter()
   const onHandleClose = () => {
     router.back()
   }
-  useEffect(() => {
-    clientapi.get(`/profile/following/${pathname}?page=1&limit=10`).then((res) => {
-      console.log(res.data);
-      setData(res.data.data)
-    }).catch((error) => {
-      console.error(error);
 
-    })
+  async function fetchData(pageNumber: number) {
+    const response = await clientapi.get(`/profile/following/${pathname}?page=${pageNumber}&limit=10`)
+    console.log('followers data', response.data.data);
+    setData(response.data.data.dbResponse.following)
+    setEndPage(response.data.data.endPage)
+  }
+  useEffect(() => {
+    fetchData(1);
   }, [])
+
   return (
     <Dialog open={true} defaultOpen={true} onOpenChange={onHandleClose} >
-      <DialogContent>
-        <DialogTitle className='text-center'><span className='text-lg font-bold'>Following</span></DialogTitle>
+      <DialogContent className='overflow-y-auto'>
+        <DialogTitle className='text-center'><span className='text-lg font-bold'>Followers</span></DialogTitle>
         <div className='flex flex-col w-full items-center'>
-          {data?.dbResponse.following.map((data) => {
-            return <HoverCardProfile key={data._id} username={data.username}>
-             <Link href={`/${data.username}`} className='w-[90%]'>
-             <Content username={data.username} data={data} />
-             </Link>
+          {data?.map((userdata) => {
+            return <HoverCardProfile key={userdata._id} username={userdata.username}>
+              <Link href={`/${userdata.username}`} className='w-[90%]'>
+                <Content username={userdata.username} data={userdata} />
+              </Link>
             </HoverCardProfile>
           })}
+          <InView as={'div'} onChange={async () => {
+            if (endPage >= page) {
+              const response = await clientapi.get(`/profile/following/${pathname}?page=${page}&limit=10`)
+              setData((data) => [...data!, ...response.data.data.dbResponse.following])
+              setPage((page) => page + 1)
+            }
+          }}>
+          </InView>
+          <div className='w-full flex items-center  justify-center gap-3'>
+            {page >= endPage ? <h1>{`that's all folks ${endPage}`}</h1> : <>
+              <Spinner />
+              <h1>loading...</h1>
+            </>
+            }
+          </div>
         </div>
       </DialogContent>
     </Dialog>
   )
 }
-
 export default Following
-
 type ContentProps = {
   username: string,
   data: UserData
@@ -90,6 +105,7 @@ function Content({ username, data }: ContentProps) {
       })
     })
   }
+
   return <div className='flex items-center justify-center cursor-pointer  min-w-[90%]'>
     <div className='flex gap-4 items-center p-2  w-full m-3 rounded-md '>
       <DisplayPicture username={username} width={40} height={40} />
@@ -98,6 +114,7 @@ function Content({ username, data }: ContentProps) {
         <h3 title='info' className='text-gray-500'>{data.firstName} {data.lastName}</h3>
       </div>
       <div>
+        {/* <Button onClick={() => { onHandleFollow(data._id) }} className='font-bold text-blue-500' variant={'ghost'}>Follow</Button> */}
         {username === user?.username ? <Button asChild ><Link href={'/accounts/edit'}>Edit Profile</Link></Button> : <Button variant={isFollowing ? "outline" : 'default'} onClick={() => onHandleFollow(data._id)}>{isFollowing ? "Following" : "Follow"}</Button>}
       </div>
     </div>
