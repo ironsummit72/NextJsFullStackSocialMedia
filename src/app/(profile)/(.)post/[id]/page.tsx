@@ -1,6 +1,7 @@
 'use client'
-import { Dialog, DialogContent } from '@/components/ui/dialog'
-import { DialogTitle } from '@radix-ui/react-dialog'
+import PostCard from '@/components/custom/PostCard'
+import { Dialog, DialogContent,DialogTitle } from '@/components/ui/dialog'
+
 import { useRouter } from 'next/navigation'
 import React from 'react'
 
@@ -14,10 +15,10 @@ type Props={
       router.back()
     }
   return (
-    <Dialog open={true} defaultOpen={true} onOpenChange={onHandleClose} >
-      <DialogTitle>Hello</DialogTitle>
-      <DialogContent>
-        Intercepted Post {id}
+    <Dialog  open={true} defaultOpen={true} onOpenChange={onHandleClose} >
+      <DialogTitle></DialogTitle>
+      <DialogContent className='min-w-[50vw] min-h-[70vh] '>
+        <PostCard postId={id}/>
       </DialogContent>
     </Dialog>
   )
