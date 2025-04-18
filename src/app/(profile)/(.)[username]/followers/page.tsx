@@ -1,6 +1,5 @@
 'use client'
-import { Dialog, DialogContent } from '@/components/ui/dialog'
-import { DialogTitle } from '@radix-ui/react-dialog'
+import { Dialog, DialogContent,DialogTitle } from '@/components/ui/dialog'
 import React, { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { clientapi } from '@/lib/api'
@@ -30,7 +29,6 @@ function Followers() {
 
   async function fetchData(pageNumber: number) {
     const response = await clientapi.get(`/profile/followers/${pathname}?page=${pageNumber}&limit=10`)
-    console.log('followers data', response.data.data);
     setData(response.data.data.dbResponse.followers)
     setEndPage(response.data.data.endPage)
   }
@@ -90,7 +88,6 @@ function Content({ username, data }: ContentProps) {
   useEffect(() => {
     if (!data) return;
     clientapi.get(`/user/isfollowing/${data?._id}`).then((res) => {
-      console.log(res.data.data, 'isFollowing');
       setIsFollowing(res.data.data);
     }).catch((err) => {
       console.error(err);
