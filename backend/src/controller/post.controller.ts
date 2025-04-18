@@ -9,7 +9,6 @@ export async function createPost(req: Request, res: Response) {
 	if (caption) {
 		const postDbResponse = await postModel.create({ caption, content: req.files, user: req.user?.id });
 		const userDbResponse = await userModel.updateOne({ _id: req.user?.id }, { $push: { posts: postDbResponse._id } });
-		console.log("user DB REsponse", userDbResponse);
 		if (postDbResponse && userDbResponse) {
 			const response: ApiResponse = {
 				data: postDbResponse, message: 'post uploaded successfully', redirect: null, statusCode: 201, statusMessage: 'success',
@@ -37,7 +36,7 @@ export async function getPostById(req: Request, res: Response) {
 	try {
 		const { id } = req.params;
 		if (id) {
-			const dbResponse = await postModel.findById(id).populate({ path: "user", select: "-password" }).populate({path:"comments"});
+			const dbResponse = await postModel.findById(id).populate({ path: "user", select: "-password" }).populate({ path: "comments" });
 			if (dbResponse) {
 				const response: ApiResponse = {
 					data: dbResponse,
@@ -210,3 +209,5 @@ export async function recommendedPosts(req: Request, res: Response) {
 		res.status(500).json(response)
 	}
 }
+
+
