@@ -5,6 +5,7 @@ import authRouter from './routes/auth.routes'
 import postRouter from './routes/post.routes'
 import profileRouter from './routes/profile.routes'
 import contentRouter from './routes/content.routes'
+import commentRouter from './routes/comment.routes'
 import userRouter from './routes/user.routes'
 import jwt from 'jsonwebtoken'
 import ConnectDB from './utils/connectDb.util'
@@ -52,6 +53,7 @@ app.use(`/profile`, profileRouter)
 app.use('/content', contentRouter)
 app.use('/post', postRouter)
 app.use('/user', userRouter)
+app.use('/comment',commentRouter)
 app.listen(PORT, () => {
 	console.log('listening on port ' + PORT)
 })
