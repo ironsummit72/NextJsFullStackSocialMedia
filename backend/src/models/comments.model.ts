@@ -1,9 +1,8 @@
-import mongoose, {Schema} from 'mongoose'
-import {CommentModel} from '../types/DatabaseModelTypes'
-import {replySchema} from './reply.model'
+import mongoose, { Schema } from 'mongoose'
+import { CommentModel } from '../types/DatabaseModelTypes'
 const commentSchema = new Schema<CommentModel>(
 	{
-		author: {
+		user: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'User',
 		},
@@ -15,7 +14,21 @@ const commentSchema = new Schema<CommentModel>(
 			type: mongoose.Schema.Types.ObjectId,
 			required: true,
 		},
-		replies: [replySchema],
+		replies: [{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Reply"
+		}],
+		isEdited: {
+			type: Boolean,
+			default: false
+		},
+		likes: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: 'User',
+				default: []
+			}
+		]
 	},
 	{
 		timestamps: true,
