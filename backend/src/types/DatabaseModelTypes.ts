@@ -1,4 +1,4 @@
-import {ObjectId, Schema} from 'mongoose'
+import { ObjectId, Schema } from 'mongoose'
 
 export interface UserModel {
 	username: string
@@ -6,14 +6,14 @@ export interface UserModel {
 	lastName: string
 	email: string
 	password: string
-	bio:string
+	bio: string
 	posts: Array<DB_Relation>
 	displayPicturePath: string
-	savedPosts:[],
-	taggedPosts:[],
-	followers:[],
-	following:[]
-	likedPosts:[]
+	savedPosts: [],
+	taggedPosts: [],
+	followers: [],
+	following: []
+	likedPosts: []
 
 }
 export interface PostModel {
@@ -26,17 +26,18 @@ export interface PostModel {
 	mentions: []
 }
 export interface CommentModel {
-	author: ObjectId
+	user: ObjectId
 	postId: ObjectId
 	message: string
-	replies: []
+	replies: ReplyModel[]
+	likes:[],
+	isEdited:boolean
 }
 export interface ReplyModel {
-	author: ObjectId
-	postId: ObjectId
-	commentId: ObjectId
-	message: string
-	likes: []
+	user: ObjectId,
+	message: string,
+	parentCommentId: ObjectId
+	likes: ObjectId[]
 }
 export interface HashTagModel {
 	tagname: string
