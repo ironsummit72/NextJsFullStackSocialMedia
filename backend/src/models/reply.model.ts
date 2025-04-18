@@ -1,30 +1,29 @@
-import mongoose, {Schema} from 'mongoose'
-import {ReplyModel} from '../types/DatabaseModelTypes'
+import mongoose, { Schema } from 'mongoose'
+import { ReplyModel } from '../types/DatabaseModelTypes'
+
 export const replySchema = new Schema<ReplyModel>({
-	author: [
-		{
-			type: mongoose.Schema.Types.ObjectId,
-			ref: 'User',
-		},
-	],
-	postId: {
+	user: {
 		type: mongoose.Schema.Types.ObjectId,
-		ref: 'Post',
+		ref: 'User',
 	},
-	commentId: {
+	parentCommentId: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Comment',
-	},
-	message: {
-		type: String,
-		required: true,
 	},
 	likes: [
 		{
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'User',
-		},
+			default: []
+		}
 	],
+	message: {
+		type: String,
+		default: '',
+		required: true
+	}
+
+
 })
 const replyModel = mongoose.model('Reply', replySchema)
 export default replyModel
