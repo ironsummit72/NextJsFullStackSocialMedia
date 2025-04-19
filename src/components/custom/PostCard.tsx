@@ -10,6 +10,7 @@ import { Button } from '../ui/button';
 import { Avatar, AvatarFallback } from '../ui/avatar';
 import { useToast } from '@/hooks/use-toast';
 import { getCurrentUserClient } from '@/lib/getCurrentUserClient';
+import { twMerge } from 'tailwind-merge';
 
 
 type Props = {
@@ -58,8 +59,8 @@ export function PostCard({ postId }: Props) {
           <EllipsisVertical />
         </div>
         {/* <LinkifyText text={data?.caption!}/> */}
-        <h1>{data?.caption}</h1>
-        <CommentSection postId={postId} />
+
+        <CommentSection caption={data?.caption!}  postId={postId} />
       </div>
     </div>
   )
@@ -70,6 +71,8 @@ export default PostCard
 
 type CommentSectionProps = {
   postId: string
+  className?: string
+  caption:string
 }
 type ReplyType = {
   _id: string
@@ -87,7 +90,7 @@ type CommentsType = {
   isEdited: boolean,
   replies: ReplyType[]
 }
-export function CommentSection({ postId }: CommentSectionProps) {
+export function CommentSection({ postId, className,caption }: CommentSectionProps) {
   const [reload, setReload] = useState<boolean>()
   const [comments, setComments] = useState<CommentsType[]>()
   const [user, setUser] = useState<USER | null>()
@@ -164,8 +167,28 @@ export function CommentSection({ postId }: CommentSectionProps) {
     }
   }
   return (
-    <div className="w-full h-full max-w-md mx-auto bg-white rounded-lg overflow-hidden ">
+    <div className={twMerge('w-full h-full max-w-md mx-auto bg-white rounded-lg overflow-hidden ', className)}>
       <div className="px-4 py-3 max-h-96 overflow-y-auto">
+
+
+        {/* caption */}
+        <div className="mb-4">
+          <div className="flex items-start">
+            <Avatar>
+              <AvatarFallback className="h-8 w-8 mr-2">
+                <DisplayPicture username={user?.username!} width={70} height={70} />
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex-1">
+              <div className="inline-flex items-start">
+                <span className="font-semibold text-sm mr-1">{user?.username}</span>
+                <span className="text-sm font-medium">{caption}</span>
+              </div>
+              <div className="flex items-center mt-1 text-xs text-gray-500">
+              </div>
+            </div>
+          </div>
+        </div>
         {comments?.map((comment) => (
           <div key={comment._id} className="mb-4">
             <div className="flex items-start">
@@ -231,7 +254,7 @@ export function CommentSection({ postId }: CommentSectionProps) {
           </div>
         ))}
       </div>
-      <div className="border-t border-gray-200 px-4 py-3">
+      <div className="border-t border-gray-200 px-4 py-3 ">
         <div className="flex items-center">
           <Input
             placeholder={commentOrReply === 'REPLY' ? ` Reply to ${replyingTo}'s comment...` : "Add a comment..."}
