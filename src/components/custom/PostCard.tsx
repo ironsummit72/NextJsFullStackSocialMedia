@@ -176,7 +176,7 @@ export function CommentSection({ postId, className, caption }: CommentSectionPro
     clientapi.patch(`comment/like/${commentId}`).then((res) => {
       toast({
         title: "liked Comment",
-        description: 'you liked a comment'
+        description: res.data.message
       })
       setReload((prev) => !prev)
     })

@@ -286,27 +286,53 @@ export async function likeComment(req: Request, res: Response) {
         const { commentId } = req.params;
         const loggedInUser = req.user
         if (commentId) {
-            const commentResponse = await commentModel.findByIdAndUpdate(commentId, { $addToSet: { likes: loggedInUser?.id } })
-            if (commentResponse) {
-                const response: ApiResponse = {
-                    data: false,
-                    message: 'like added successfully',
-                    redirect: null,
-                    statusCode: 200,
-                    statusMessage: 'success',
-                    success: true
+            const isLikeExists = await commentModel.findOne({ _id: commentId, likes: { $in: [loggedInUser?.id] } });
+            if (isLikeExists) {
+                const dbResponse = await commentModel.findByIdAndUpdate(commentId, { $pull: { likes: loggedInUser?.id } })
+                if (dbResponse) {
+                    const response: ApiResponse = {
+                        data: null,
+                        message: "you unliked the comment",
+                        redirect: null,
+                        statusCode: 200,
+                        statusMessage: 'success',
+                        success: true
+                    }
+                    res.status(response.statusCode).json(response)
+                } else {
+                    const response: ApiResponse = {
+                        data: null,
+                        message: `comment not found`,
+                        redirect: null,
+                        statusCode: 404,
+                        statusMessage: 'not found ',
+                        success: false
+                    }
+                    res.status(response.statusCode).json(response)
                 }
-                res.status(response.statusCode).json(response)
-
             } else {
-                const response: ApiResponse = {
-                    data: null,
-                    message: `comment not found with this id ${commentId}`,
-                    redirect: null,
-                    statusCode: 404, statusMessage: 'not found',
-                    success: false
+                const dbResponse = await commentModel.findByIdAndUpdate(commentId, { $addToSet: { likes: loggedInUser?.id } })
+                if (dbResponse) {
+                    const response: ApiResponse = {
+                        data: null,
+                        message: "you liked the comment",
+                        redirect: null,
+                        statusCode: 200,
+                        statusMessage: 'success',
+                        success: true
+                    }
+                    res.status(response.statusCode).json(response)
+                } else {
+                    const response: ApiResponse = {
+                        data: null,
+                        message: `comment not found`,
+                        redirect: null,
+                        statusCode: 404,
+                        statusMessage: 'not found ',
+                        success: false
+                    }
+                    res.status(response.statusCode).json(response)
                 }
-                res.status(response.statusCode).json(response);
             }
         } else {
             const response: ApiResponse = {
