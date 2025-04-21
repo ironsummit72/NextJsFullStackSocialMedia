@@ -29,8 +29,40 @@ export async function createPost(req: Request, res: Response) {
 		res.json(response);
 	}
 }
-export async function editPost(req: Request, res: Response) { }
+export async function editPost(req: Request, res: Response) {
+	try {
+		const { postId } = req.params;
+		const { caption } = req.body;
+		if (postId) {
+			const postDbResponse = await postModel.findByIdAndUpdate(postId, { caption });
+			if (postDbResponse) {
+				const response: ApiResponse = {
+					data: postDbResponse, message: 'post updated successfully', redirect: null, statusCode: 200, statusMessage: 'success',
+					success: true
+				}
+				res.json(response);
+			} else {
+				const response: ApiResponse = {
+					data: postDbResponse, message: 'something went wrong', redirect: null, statusCode: 400, statusMessage: 'failed',
+					success: false
+				}
+				res.json(response);
+			}
+		}
 
+	} catch (err) {
+		const error = err as Error
+		const response: ApiResponse = {
+			data: null,
+			message: error.message,
+			redirect: null, statusCode: 500,
+			statusMessage: 'error',
+			success: false
+		}
+		res.status(200).json(response)
+
+	}
+}
 export async function getPostById(req: Request, res: Response) {
 	try {
 		const { id } = req.params;
