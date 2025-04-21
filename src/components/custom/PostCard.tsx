@@ -1,14 +1,15 @@
+'use client'
 import { clientapi } from '@/lib/api'
 import React, { useEffect, useState } from 'react'
 import { PostData, USER, UserData } from '@/types';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '../ui/carousel';
 import Video from '@/components/custom/Video';
 import DisplayPicture from './DisplayPicture';
-import { EllipsisVertical, Heart } from 'lucide-react';
+import { Bookmark, EllipsisVertical, Heart, Share2 } from 'lucide-react';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Avatar, AvatarFallback } from '../ui/avatar';
-import { useToast } from '@/hooks/use-toast';
+import { toast, useToast } from '@/hooks/use-toast';
 import { getCurrentUserClient } from '@/lib/getCurrentUserClient';
 import { twMerge } from 'tailwind-merge';
 
@@ -18,6 +19,23 @@ type Props = {
 }
 export function PostCard({ postId }: Props) {
   const [data, setData] = useState<PostData>();
+  const [isliked, setIsLiked] = useState<boolean>(false);
+  const [issaved, setIsSaved] = useState<boolean>(false);
+  const [reload, setReload] = useState<boolean>(false);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const isSavedResponse = await clientapi.get(`/post/issaved/${postId}`)
+        const isLikedResponse = await clientapi.get(`/post/isliked/${postId}`)
+        setIsSaved(isSavedResponse.data.data);
+        setIsLiked(isLikedResponse.data.data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchData()
+  }, [reload])
   useEffect(() => {
     async function fetchData() {
       try {
@@ -28,9 +46,22 @@ export function PostCard({ postId }: Props) {
       }
     }
     fetchData()
-  }, [])
+  }, [reload])
 
-
+  function handleLike() {
+    clientapi.patch(`post/like/${postId}`).then((res) => {
+      setReload(prev => !prev);
+    }).catch((err) => {
+      console.error(err);
+    })
+  }
+  function handleSave() {
+    clientapi.patch(`post/save/${postId}`).then((res) => {
+      setReload(prev => !prev);
+    }).catch((err) => {
+      console.error(err);
+    })
+  }
   return (
     <div className='flex gap-2 '>
       <div className='w-1/2'>
@@ -58,9 +89,20 @@ export function PostCard({ postId }: Props) {
           </div>
           <EllipsisVertical />
         </div>
-        {/* <LinkifyText text={data?.caption!}/> */}
-
         <CommentSection caption={data?.caption!} postId={postId} />
+        <div className='flex flex-col gap-3'>
+          <div className='flex gap-4 items-center justify-between '>
+            <div className='flex items-center gap-4'>
+              {isliked ? <Heart className='fill-red-500 cursor-pointer' onClick={handleLike} /> : <Heart className='cursor-pointer' onClick={handleLike} />}
+              <Share2 />
+            </div>
+            {!issaved ? <Bookmark className='cursor-pointer' onClick={handleSave} /> : <Bookmark className='fill-black cursor-pointer' onClick={handleSave} />}
+          </div>
+          <div className='flex flex-col gap-1  w-fit items-start'>
+            <span className='font-semibold'> {data?.likes.length} likes</span>
+            <span className='text-gray-500'>6 April</span>
+          </div>
+        </div>
       </div>
     </div>
   )
