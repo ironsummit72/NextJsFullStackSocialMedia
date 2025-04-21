@@ -5,15 +5,31 @@ import Video from '@/components/custom/Video'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
 import { clientapi } from '@/lib/api'
 import { PostData } from '@/types'
-import { EllipsisVertical } from 'lucide-react'
+import { Bookmark, EllipsisVertical, Heart, Share2 } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 type Props = {
   params: Promise<{ id: string }>
 }
-
 function PostPage({ params }: Props) {
   const { id: postId } = React.use(params)
   const [data, setData] = useState<PostData>();
+  const [isliked, setIsLiked] = useState<boolean>(false);
+  const [issaved, setIsSaved] = useState<boolean>(false);
+  const [reload, setReload] = useState<boolean>(false);
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const isSavedResponse = await clientapi.get(`/post/issaved/${postId}`)
+        const isLikedResponse = await clientapi.get(`/post/isliked/${postId}`)
+        setIsSaved(isSavedResponse.data.data);
+        setIsLiked(isLikedResponse.data.data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchData()
+  }, [reload])
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -24,18 +40,32 @@ function PostPage({ params }: Props) {
       }
     }
     fetchData()
-  }, [])
+  }, [reload])
+  function handleLike() {
+    clientapi.patch(`post/like/${postId}`).then((res) => {
+      setReload(prev => !prev);
+    }).catch((err) => {
+      console.error(err);
+    })
+  }
+  function handleSave() {
+    clientapi.patch(`post/save/${postId}`).then((res) => {
+      setReload(prev => !prev);
+    }).catch((err) => {
+      console.error(err);
+    })
+  }
   return (
     <div className='w-[90vw] overflow-x-hidden h-screen flex items-center justify-center'>
       <div className='w-[50%] gap-4 h-full  flex items-center'>
         <div className='w-1/2 '>
           <Carousel>
             <CarouselContent>
-              {data?.content.map((content) => {
+              {data?.content.map((content, index) => {
                 if (content.mimetype.split('/')[0] === 'video') {
-                  return <CarouselItem key={data._id}> <Video className='object-cover' width={400} height={400} filename={content.filename}></Video></CarouselItem>
+                  return <CarouselItem key={content.filename + content.originalname + index}> <Video className='object-cover' width={400} height={400} filename={content.filename}></Video></CarouselItem>
                 } else {
-                  return <CarouselItem key={data._id}><img key={data._id} src={`http://localhost:5002/content/stream/${content.mimetype.split('/')[0]}/${content.filename}`} width={400} height={400} alt="" /></CarouselItem>
+                  return <CarouselItem key={content.filename + content.originalname + index}><img key={data._id} src={`http://localhost:5002/content/stream/${content.mimetype.split('/')[0]}/${content.filename}`} width={400} height={400} alt="" /></CarouselItem>
                 }
               })}
             </CarouselContent>
@@ -53,15 +83,23 @@ function PostPage({ params }: Props) {
             </div>
             <EllipsisVertical />
           </div>
-         
-          <CommentSection caption={data?.caption!}  postId={postId} />
+          <CommentSection caption={data?.caption!} postId={postId} />
+          <div className='flex flex-col gap-3'>
+            <div className='flex gap-4 items-center justify-between '>
+              <div className='flex items-center gap-4'>
+                {isliked ? <Heart className='fill-red-500 cursor-pointer' onClick={handleLike} /> : <Heart className='cursor-pointer' onClick={handleLike} />}
+                <Share2 />
+              </div>
+              {!issaved ? <Bookmark className='cursor-pointer' onClick={handleSave} /> : <Bookmark className='fill-black cursor-pointer' onClick={handleSave} />}
+            </div>
+            <div className='flex flex-col gap-1  w-fit items-start'>
+              <span className='font-semibold'> {data?.likes.length} likes</span>
+              <span className='text-gray-500'>6 April</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   )
 }
-
-
-
-
 export default PostPage

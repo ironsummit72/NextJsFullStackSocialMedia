@@ -60,7 +60,7 @@ export function PostCard({ postId }: Props) {
         </div>
         {/* <LinkifyText text={data?.caption!}/> */}
 
-        <CommentSection caption={data?.caption!}  postId={postId} />
+        <CommentSection caption={data?.caption!} postId={postId} />
       </div>
     </div>
   )
@@ -72,7 +72,7 @@ export default PostCard
 type CommentSectionProps = {
   postId: string
   className?: string
-  caption:string
+  caption: string
 }
 type ReplyType = {
   _id: string
@@ -90,7 +90,7 @@ type CommentsType = {
   isEdited: boolean,
   replies: ReplyType[]
 }
-export function CommentSection({ postId, className,caption }: CommentSectionProps) {
+export function CommentSection({ postId, className, caption }: CommentSectionProps) {
   const [reload, setReload] = useState<boolean>()
   const [comments, setComments] = useState<CommentsType[]>()
   const [user, setUser] = useState<USER | null>()
@@ -172,7 +172,7 @@ export function CommentSection({ postId, className,caption }: CommentSectionProp
 
 
         {/* caption */}
-        <div className="mb-4">
+        {caption && <div className="mb-4">
           <div className="flex items-start">
             <Avatar>
               <AvatarFallback className="h-8 w-8 mr-2">
@@ -188,7 +188,7 @@ export function CommentSection({ postId, className,caption }: CommentSectionProp
               </div>
             </div>
           </div>
-        </div>
+        </div>}
         {comments?.map((comment) => (
           <div key={comment._id} className="mb-4">
             <div className="flex items-start">
