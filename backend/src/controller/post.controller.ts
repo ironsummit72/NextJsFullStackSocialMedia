@@ -28,7 +28,6 @@ export async function createPost(req: Request, res: Response) {
 		}
 		res.json(response);
 	}
-
 }
 export async function editPost(req: Request, res: Response) { }
 
@@ -85,7 +84,6 @@ export async function getPostById(req: Request, res: Response) {
 		res.status(200).json(response)
 	}
 }
-
 export async function getAllPostsByUsername(req: Request, res: Response) {
 	const { username } = req.params;
 	const page = Number(req.query?.page);
@@ -145,10 +143,84 @@ export async function getAllPostsByUsername(req: Request, res: Response) {
 
 
 }
-export async function deletePost(req: Request, res: Response) { }
-export async function likePost(req: Request, res: Response) { }
-export async function savePost(req: Request, res: Response) { }
+export async function likePost(req: Request, res: Response) {
+	try {
+		const { postId } = req.params;
+		const loggedInuser = req.user;
+		if (postId) {
+			const likeExists = await postModel.findOne({ _id: postId, likes: { $in: [loggedInuser?.id] } });
+			if (likeExists) {
+				const postsResponse = await postModel.findByIdAndUpdate(postId, { $pull: { likes: loggedInuser?.id } })
+				if (postsResponse) {
+					const response: ApiResponse = {
+						data: postsResponse,
+						message: "you unliked the post",
+						redirect: null, statusCode: 200,
+						statusMessage: 'success',
+						success: false,
+					}
+					res.status(response.statusCode).json(response)
+				} else {
+					const response: ApiResponse = {
+						data: postsResponse,
+						message: `post not found with this ${postId}`,
+						redirect: null, statusCode: 404,
+						statusMessage: 'success',
+						success: false,
+					}
+					res.status(response.statusCode).json(response)
+				}
+			} else {
+				const postsResponse = await postModel.findByIdAndUpdate(postId, { $addToSet: { likes: loggedInuser?.id } })
+				if (postsResponse) {
+					const response: ApiResponse = {
+						data: postsResponse,
+						message: "you liked the post",
+						redirect: null, statusCode: 200,
+						statusMessage: 'success',
+						success: false,
+					}
+					res.status(response.statusCode).json(response)
+				} else {
+					const response: ApiResponse = {
+						data: postsResponse,
+						message: `post not found with this ${postId}`,
+						redirect: null, statusCode: 404,
+						statusMessage: 'success',
+						success: false,
+					}
+					res.status(response.statusCode).json(response)
+				}
+			}
+		} else {
+			const response: ApiResponse = {
+				data: null,
+				message: 'postId not provided in Request Parameters',
+				redirect: null,
+				statusCode: 400,
+				statusMessage: 'bad request',
+				success: false
+			}
+			res.status(response.statusCode).json(response);
+		}
 
+	} catch (err) {
+		const error = err as Error
+		const response: ApiResponse = {
+			data: null,
+			message: error.message,
+			redirect: null,
+			statusCode: 500,
+			statusMessage: 'error',
+			success: false
+		}
+		res.status(response.statusCode).json(response);
+		console.error(error);
+
+
+	}
+
+}
 export async function recommendedPosts(req: Request, res: Response) {
 	try {
 		const userID = req.user?.id;
@@ -209,5 +281,246 @@ export async function recommendedPosts(req: Request, res: Response) {
 		res.status(500).json(response)
 	}
 }
+export async function isLiked(req: Request, res: Response) {
+	try {
+		const { postId } = req.params
+		const loggedInuser = req.user
+		if (postId) {
+			const likeExists = await postModel.findOne({ _id: postId, likes: { $in: [loggedInuser?.id] } });
+			if (likeExists) {
+				const response: ApiResponse = {
+					data: true,
+					message: 'post is liked',
+					redirect: null,
+					statusCode: 200,
+					statusMessage: 'success',
+					success: true
+				}
+				res.status(response.statusCode).json(response)
 
+			} else {
+				const response: ApiResponse = {
+					data: false,
+					message: 'post is not liked',
+					redirect: null,
+					statusCode: 200,
+					statusMessage: 'success',
+					success: true
+				}
+				res.status(response.statusCode).json(response)
+			}
+
+		}
+		else {
+			const response: ApiResponse = {
+				data: null,
+				message: 'postId not provided in Request Parameters',
+				redirect: null,
+				statusCode: 400,
+				statusMessage: 'bad request',
+				success: false
+			}
+			res.status(response.statusCode).json(response)
+		}
+
+	} catch (err) {
+		const error = err as Error
+		const response: ApiResponse = {
+			data: null,
+			message: error.message,
+			redirect: null,
+			statusCode: 500,
+			statusMessage: 'error',
+			success: false
+		}
+		res.status(response.statusCode).json(response);
+	}
+}
+export async function isSaved(req: Request, res: Response) {
+	try {
+		const { postId } = req.params
+		const loggedInuser = req.user
+		if (postId) {
+			const dbResponse = await userModel.findOne({ _id: loggedInuser?.id, savedPosts: { $in: [postId] } });
+			if (dbResponse) {
+				const response: ApiResponse = {
+					data: true,
+					message: 'post is saved',
+					redirect: null,
+					statusCode: 200,
+					statusMessage: 'success',
+					success: true
+				}
+				res.status(response.statusCode).json(response);
+			} else {
+				const response: ApiResponse = {
+					data: false,
+					message: 'post is not saved',
+					redirect: null,
+					statusCode: 200,
+					statusMessage: 'success',
+					success: true
+				}
+				res.status(response.statusCode).json(response);
+			}
+
+		} else {
+			const response: ApiResponse = {
+				data: null,
+				message: `postId not provided in Request Parameters`,
+				redirect: null,
+				statusCode: 400,
+				statusMessage: 'bad request',
+				success: false
+			}
+			res.status(response.statusCode).json(response)
+
+		}
+	} catch (err) {
+		const error = err as Error;
+		const response: ApiResponse = {
+			data: null,
+			message: error.message,
+			redirect: null,
+			statusCode: 500,
+			statusMessage: 'error',
+			success: false
+		}
+		res.status(response.statusCode).json(response)
+	}
+}
+
+export async function deletePost(req: Request, res: Response) {
+	try {
+		const { postId } = req.params;
+		if (postId) {
+			const dbResponse = await postModel.findByIdAndDelete(postId);
+			if (dbResponse) {
+				const response: ApiResponse = {
+					data: null,
+					message: 'post deleted successfully',
+					redirect: null,
+					statusCode: 200,
+					statusMessage: 'success',
+					success: true
+				}
+				res.status(response.statusCode).json(response)
+			} else {
+				const response: ApiResponse = {
+					data: null,
+					message: `no post found with this PostId: ${postId}`,
+					redirect: null,
+					statusCode: 404,
+					statusMessage: 'not found',
+					success: false
+				}
+				res.status(response.statusCode).json(response);
+			}
+		} else {
+			const response: ApiResponse = {
+				data: null,
+				message: 'please provide the PostId in Request Parameters',
+				redirect: null,
+				statusCode: 400,
+				statusMessage: 'bad request',
+				success: false
+			}
+			res.status(response.statusCode).json(response);
+		}
+
+	} catch (err) {
+		const error = err as Error;
+		const response: ApiResponse = {
+			data: null,
+			message: error.message,
+			redirect: null,
+			statusCode: 500,
+			statusMessage: 'error',
+			success: false
+		}
+		res.status(response.statusCode).json(response)
+	}
+}
+export async function savePost(req: Request, res: Response) {
+	try {
+		const { postId } = req.params;
+		const loggedInuser = req.user
+		if (postId) {
+			const postsResponse = await postModel.findById(postId);
+			if (postsResponse) {
+				const dbResponse = await userModel.findOne({ _id: loggedInuser?.id, savedPosts: { $in: [postId] } });
+				if (dbResponse) {
+					const userResponse = await userModel.findByIdAndUpdate(loggedInuser?.id, { $pull: { savedPosts: postId } })
+					if (userResponse) {
+						const response: ApiResponse = {
+							data: null,
+							message: 'you unsaved the post',
+							redirect: null,
+							statusCode: 200,
+							statusMessage: 'success',
+							success: true
+						}
+						res.status(response.statusCode).json(response)
+					} else {
+						const response: ApiResponse = {
+							data: null,
+							message: `post not found by this id ${postId}`,
+							redirect: null,
+							statusCode: 404,
+							statusMessage: "not found",
+							success: false
+						}
+						res.status(response.statusCode).json(response)
+					}
+				} else {
+					const userResponse = await userModel.findByIdAndUpdate(loggedInuser?.id, { $addToSet: { savedPosts: postId } })
+					if (userResponse) {
+						const response: ApiResponse = {
+							data: null,
+							message: 'you saved this post',
+							redirect: null,
+							statusCode: 200,
+							statusMessage: 'success',
+							success: true
+						}
+						res.status(response.statusCode).json(response);
+					} else {
+						const response: ApiResponse = {
+							data: null,
+							message: `post not found by this id ${postId}`,
+							redirect: null,
+							statusCode: 404,
+							statusMessage: 'not found',
+							success: false
+						}
+						res.status(response.statusCode).json(response);
+					}
+				}
+			}
+		} else {
+			const response: ApiResponse = {
+				data: null,
+				message: 'postId not provided in Request Parameters',
+				redirect: null,
+				statusCode: 400,
+				statusMessage: 'bad request',
+				success: false
+			};
+			res.status(response.statusCode).json(response)
+
+		}
+
+	} catch (err) {
+		const error = err as Error;
+		const response: ApiResponse = {
+			data: null,
+			message: error.message,
+			redirect: null,
+			statusCode: 500,
+			statusMessage: 'error',
+			success: false
+		}
+		res.status(response.statusCode).json(response)
+	}
+}
 
