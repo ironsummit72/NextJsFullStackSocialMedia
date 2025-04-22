@@ -7,7 +7,7 @@ import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { usePathname, useRouter } from 'next/navigation'
-import { Clapperboard, Grid, Tags } from 'lucide-react'
+import { Bookmark, Clapperboard, Grid, Tags } from 'lucide-react'
 import { getCurrentUserClient } from '@/lib/getCurrentUserClient'
 import {
     Collapsible,
@@ -102,7 +102,9 @@ function ProfileInfo({ username, stories, poststab }: Props) {
                     <TabsList className='w-full '>
                         <TabsTrigger value="posts"><div className='flex items-center gap-2'><Grid /> POSTS</div></TabsTrigger>
                         <TabsTrigger value="reels"><div className='flex items-center gap-2'><Clapperboard /> REELS</div></TabsTrigger>
+                        {user?.username===pathname.split('/')[1] && <TabsTrigger value="saved"><div className='flex items-center gap-2'><Bookmark /> SAVED</div></TabsTrigger>}
                         <TabsTrigger value="tagged"><div className='flex items-center gap-2'><Tags /> TAGGED</div></TabsTrigger>
+
                     </TabsList>
                     <div className='h-auto min-h-screen  w-full mt-2'>
                         {poststab}
