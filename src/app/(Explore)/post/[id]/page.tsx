@@ -16,6 +16,8 @@ function PostPage({ params }: Props) {
   const [isliked, setIsLiked] = useState<boolean>(false);
   const [issaved, setIsSaved] = useState<boolean>(false);
   const [reload, setReload] = useState<boolean>(false);
+  const [weekday, month, day, year, time] = new Date(data?.createdAt!).toString().split(" ")
+  const [cweekday, cmonth, cday, cyear, ctime] = new Date(Date.now()).toString().split(" ")
   useEffect(() => {
     async function fetchData() {
       try {
@@ -94,7 +96,14 @@ function PostPage({ params }: Props) {
             </div>
             <div className='flex flex-col gap-1  w-fit items-start'>
               <span className='font-semibold'> {data?.likes.length} likes</span>
-              <span className='text-gray-500'>6 April</span>
+              {data?.createdAt ? <span className='text-gray-500'>
+                {" "}
+                {cday === day
+                  ? time.split(":")[0] + ":" + time.split(":")[1] + " "
+                  : ""}
+                {cmonth === month ? day : month} {cmonth === month ? weekday : day}{" "}
+                {cyear === year ? "" : year}
+              </span> : <></>}
             </div>
           </div>
         </div>
