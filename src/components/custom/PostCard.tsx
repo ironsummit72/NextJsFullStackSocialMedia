@@ -12,6 +12,8 @@ import { Avatar, AvatarFallback } from '../ui/avatar';
 import { useToast } from '@/hooks/use-toast';
 import { getCurrentUserClient } from '@/lib/getCurrentUserClient';
 import { twMerge } from 'tailwind-merge';
+import CustomDialog from './Dialogs/Dialog';
+import ShowLikeOfPostContent from './Dialogs/Contents/ShowLikeOfPostContent';
 
 
 type Props = {
@@ -101,7 +103,9 @@ export function PostCard({ postId }: Props) {
             {!issaved ? <Bookmark className='cursor-pointer' onClick={handleSave} /> : <Bookmark className='fill-black cursor-pointer' onClick={handleSave} />}
           </div>
           <div className='flex flex-col gap-1  w-fit items-start'>
-            <span className='font-semibold'> {data?.likes.length} likes</span>
+          <CustomDialog title='Likes' content={<ShowLikeOfPostContent postId={postId} />}>
+              <span className='font-semibold'> {data?.likes.length} likes</span>
+              </CustomDialog>
             {data?.createdAt ? <span className='text-gray-500'>
               {" "}
               {cday === day
