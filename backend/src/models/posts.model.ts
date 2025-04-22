@@ -1,5 +1,5 @@
-import mongoose, {Schema} from 'mongoose'
-import {PostModel} from '../types/DatabaseModelTypes'
+import mongoose, { Schema } from 'mongoose'
+import { PostModel } from '../types/DatabaseModelTypes'
 const PostSchema = new Schema<PostModel>({
 	user: {
 		type: Schema.Types.ObjectId,
@@ -14,31 +14,31 @@ const PostSchema = new Schema<PostModel>({
 		{
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'User',
-      default:[]
+			default: []
 		},
 	],
 	hashtags: [
 		{
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'Hashtag',
-      default:[]
+			default: []
 		},
 	],
 	likes: [
 		{
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'User',
-      default:[]
+			default: []
 		},
 	],
 	mentions: [
 		{
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'User',
-      default:[]
+			default: []
 		},
 	],
 
-})
+}, { timestamps: true })
 const postModel = mongoose.model('Post', PostSchema)
 export default postModel

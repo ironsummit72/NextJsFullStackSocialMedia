@@ -24,6 +24,6 @@ export const replySchema = new Schema<ReplyModel>({
 	}
 
 
-})
+}, { timestamps: true })
 const replyModel = mongoose.model('Reply', replySchema)
 export default replyModel

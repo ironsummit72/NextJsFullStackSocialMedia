@@ -36,4 +36,5 @@ export interface USER  {
     hastags:[]
     likes:[]
     mentions:[]
+    createdAt:string
   }
