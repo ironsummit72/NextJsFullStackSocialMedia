@@ -6,6 +6,7 @@ import HoverCardProfile from '../HoverCard/HoverCardProfile'
 import { clientapi } from '@/lib/api'
 import { useToast } from '@/hooks/use-toast'
 import { PostData, UserData } from '@/types'
+import Link from 'next/link'
 
 type Props = { username: string }
 interface UserInfo extends UserData {
@@ -31,7 +32,7 @@ function SuggessionCard({ username }: Props) {
     }
     return (
         <HoverCardProfile username={username}>
-            <div className='flex items-center justify-center cursor-pointer'>
+            <Link href={`/${username}`} className='flex items-center justify-center cursor-pointer'>
                 <div className='flex gap-4 items-center p-2  w-full m-3 rounded-md'>
                     <DisplayPicture username={username} width={40} height={40} />
                     <div className='max-w-[90%] w-[90%]'>
@@ -42,7 +43,7 @@ function SuggessionCard({ username }: Props) {
                         <Button onClick={onHandleFollow} className='font-bold text-blue-500' variant={'ghost'}>Follow</Button>
                     </div>
                 </div>
-            </div>
+            </Link>
         </HoverCardProfile>
     )
 }
