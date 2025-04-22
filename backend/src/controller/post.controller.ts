@@ -556,3 +556,72 @@ export async function savePost(req: Request, res: Response) {
 	}
 }
 
+export async function getSavedPostsByUsername(req: Request, res: Response) {
+	try {
+		const { username } = req.params
+		const loggedInuser = req.user;
+		if (username) {
+			if (username === loggedInuser?.username) {
+				const dbResponse=await userModel.findById(loggedInuser?.id,{password:0,__v:0}).populate({ path: "savedPosts" })
+				if(dbResponse)
+				{
+					const response: ApiResponse = {
+						data: dbResponse,
+						message: 'your saved posts',
+						redirect: null,
+						statusCode: 200,
+						statusMessage: 'success',
+						success: true
+					}
+					res.status(response.statusCode).json(response)
+				}else{
+					const response: ApiResponse = {
+						data: null,
+						message: `you don't have any saved posts`,
+						redirect: null,
+						statusCode: 404,
+						statusMessage: 'not found',
+						success: false
+					}
+					res.status(response.statusCode).json(response)
+				}
+				
+			 } else {
+				const response: ApiResponse = {
+					data: null,
+					message: `you don't have permission to access this route`,
+					statusCode: 403,
+					statusMessage: 'forbidden',
+					success: false,
+					redirect: null
+				}
+				res.status(response.statusCode).json(response)
+
+			}
+
+		} else {
+			const response: ApiResponse = {
+				data: null,
+				message: 'username not provided in Request Parameters',
+				redirect: null,
+				statusCode: 400,
+				statusMessage: 'bad request',
+				success: false
+
+			}
+			res.status(response.statusCode).json(response)
+		}
+
+	} catch (err) {
+		const error = err as Error;
+		const response: ApiResponse = {
+			data: null,
+			message: error.message,
+			redirect: null,
+			statusCode: 500,
+			statusMessage: 'error',
+			success: false
+		}
+		res.status(response.statusCode).json(response)
+	}
+}
