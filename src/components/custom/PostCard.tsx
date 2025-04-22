@@ -89,7 +89,7 @@ export function PostCard({ postId }: Props) {
           </div>
           <EllipsisVertical />
         </div>
-        <CommentSection caption={data?.caption!} postId={postId} />
+        <CommentSection caption={data?.caption!} postId={postId}  />
         <div className='flex flex-col gap-3'>
           <div className='flex gap-4 items-center justify-between '>
             <div className='flex items-center gap-4'>
@@ -134,6 +134,7 @@ type CommentsType = {
 }
 export function CommentSection({ postId, className, caption }: CommentSectionProps) {
   const [reload, setReload] = useState<boolean>()
+  const [data, setData] = useState<PostData>();
   const [comments, setComments] = useState<CommentsType[]>()
   const [user, setUser] = useState<USER | null>()
   const [newComment, setNewComment] = useState("")
@@ -145,6 +146,17 @@ export function CommentSection({ postId, className, caption }: CommentSectionPro
     const response = await clientapi.get(`/comment/${postId}?page=${page}&limit=10`)
     return response.data.data
   }
+    useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await clientapi.get(`/post/${postId}`)
+        setData(response.data.data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchData()
+  }, [reload])
   useEffect(() => {
     fetchComments(1).then((res) => {
       setComments(res.commentResponse)
@@ -211,19 +223,17 @@ export function CommentSection({ postId, className, caption }: CommentSectionPro
   return (
     <div className={twMerge('w-full h-full max-w-md mx-auto bg-white rounded-lg overflow-hidden ', className)}>
       <div className="px-4 py-3 max-h-96 overflow-y-auto">
-
-
         {/* caption */}
         {caption && <div className="mb-4">
           <div className="flex items-start">
             <Avatar>
               <AvatarFallback className="h-8 w-8 mr-2">
-                <DisplayPicture username={user?.username!} width={70} height={70} />
+                <DisplayPicture username={data?.user?.username!} width={70} height={70} />
               </AvatarFallback>
             </Avatar>
             <div className="flex-1">
               <div className="inline-flex items-start">
-                <span className="font-semibold text-sm mr-1">{user?.username}</span>
+                <span className="font-semibold text-sm mr-1">{data?.user?.username}</span>
                 <span className="text-sm font-medium">{caption}</span>
               </div>
               <div className="flex items-center mt-1 text-xs text-gray-500">
