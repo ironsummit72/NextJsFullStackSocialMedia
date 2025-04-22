@@ -1,4 +1,6 @@
 'use client'
+import ShowLikeOfPostContent from '@/components/custom/Dialogs/Contents/ShowLikeOfPostContent'
+import CustomDialog from '@/components/custom/Dialogs/Dialog'
 import DisplayPicture from '@/components/custom/DisplayPicture'
 import { CommentSection } from '@/components/custom/PostCard'
 import Video from '@/components/custom/Video'
@@ -95,7 +97,9 @@ function PostPage({ params }: Props) {
               {!issaved ? <Bookmark className='cursor-pointer' onClick={handleSave} /> : <Bookmark className='fill-black cursor-pointer' onClick={handleSave} />}
             </div>
             <div className='flex flex-col gap-1  w-fit items-start'>
+              <CustomDialog title='Likes' content={<ShowLikeOfPostContent postId={postId} />}>
               <span className='font-semibold'> {data?.likes.length} likes</span>
+              </CustomDialog>
               {data?.createdAt ? <span className='text-gray-500'>
                 {" "}
                 {cday === day

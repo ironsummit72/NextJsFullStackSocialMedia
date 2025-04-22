@@ -562,9 +562,8 @@ export async function getSavedPostsByUsername(req: Request, res: Response) {
 		const loggedInuser = req.user;
 		if (username) {
 			if (username === loggedInuser?.username) {
-				const dbResponse=await userModel.findById(loggedInuser?.id,{password:0,__v:0}).populate({ path: "savedPosts" })
-				if(dbResponse)
-				{
+				const dbResponse = await userModel.findById(loggedInuser?.id, { password: 0, __v: 0 }).populate({ path: "savedPosts" })
+				if (dbResponse) {
 					const response: ApiResponse = {
 						data: dbResponse,
 						message: 'your saved posts',
@@ -574,7 +573,7 @@ export async function getSavedPostsByUsername(req: Request, res: Response) {
 						success: true
 					}
 					res.status(response.statusCode).json(response)
-				}else{
+				} else {
 					const response: ApiResponse = {
 						data: null,
 						message: `you don't have any saved posts`,
@@ -585,8 +584,8 @@ export async function getSavedPostsByUsername(req: Request, res: Response) {
 					}
 					res.status(response.statusCode).json(response)
 				}
-				
-			 } else {
+
+			} else {
 				const response: ApiResponse = {
 					data: null,
 					message: `you don't have permission to access this route`,
@@ -623,5 +622,57 @@ export async function getSavedPostsByUsername(req: Request, res: Response) {
 			success: false
 		}
 		res.status(response.statusCode).json(response)
+	}
+}
+export async function getLikesOfPostByPostId(req: Request, res: Response) {
+	try {
+		const { postId } = req.params
+		if (postId) {
+			const dbResponse = await postModel.findById(postId, { __v: 0, caption: 0, comments: 0, content: 0, hashtags: 0, mentions: 0, user: 0 }).populate({ path: "likes", select: '-password -posts -savedPosts -likedPosts -following -followers', options: { limit: 50 } })
+			if (dbResponse) {
+				const response: ApiResponse = {
+					data: dbResponse,
+					message: 'likes of this post',
+					redirect: null,
+					statusCode: 200,
+					statusMessage: 'success',
+					success: true
+				}
+				res.status(response.statusCode).json(response)
+			} else {
+				const response: ApiResponse = {
+					data: null,
+					message: `no post found by this id ${postId}`,
+					redirect: null,
+					statusCode: 404,
+					statusMessage: 'not found',
+					success: false
+				}
+				res.status(response.statusCode).json(response)
+			}
+		}
+		else {
+			const response: ApiResponse = {
+				data: null,
+				message: 'postId not provided in Request Parameters',
+				redirect: null,
+				statusCode: 400,
+				statusMessage: 'bad request',
+				success: false
+			}
+			res.status(response.statusCode).json(response)
+		}
+	} catch (err) {
+		const error = err as Error
+		const response: ApiResponse = {
+			data: null,
+			message: error.message,
+			redirect: null,
+			statusCode: 500,
+			statusMessage: 'error',
+			success: false
+		}
+		res.status(response.statusCode).json(response)
+
 	}
 }
