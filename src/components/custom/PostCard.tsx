@@ -9,7 +9,7 @@ import { Bookmark, EllipsisVertical, Heart, Share2 } from 'lucide-react';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Avatar, AvatarFallback } from '../ui/avatar';
-import { toast, useToast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { getCurrentUserClient } from '@/lib/getCurrentUserClient';
 import { twMerge } from 'tailwind-merge';
 
@@ -22,6 +22,8 @@ export function PostCard({ postId }: Props) {
   const [isliked, setIsLiked] = useState<boolean>(false);
   const [issaved, setIsSaved] = useState<boolean>(false);
   const [reload, setReload] = useState<boolean>(false);
+  const [weekday, month, day, year, time] = new Date(data?.createdAt!).toString().split(" ")
+  const [cweekday, cmonth, cday, cyear, ctime] = new Date(Date.now()).toString().split(" ")
 
   useEffect(() => {
     async function fetchData() {
@@ -89,7 +91,7 @@ export function PostCard({ postId }: Props) {
           </div>
           <EllipsisVertical />
         </div>
-        <CommentSection caption={data?.caption!} postId={postId}  />
+        <CommentSection caption={data?.caption!} postId={postId} />
         <div className='flex flex-col gap-3'>
           <div className='flex gap-4 items-center justify-between '>
             <div className='flex items-center gap-4'>
@@ -100,7 +102,14 @@ export function PostCard({ postId }: Props) {
           </div>
           <div className='flex flex-col gap-1  w-fit items-start'>
             <span className='font-semibold'> {data?.likes.length} likes</span>
-            <span className='text-gray-500'>6 April</span>
+            {data?.createdAt ? <span className='text-gray-500'>
+              {" "}
+              {cday === day
+                ? time.split(":")[0] + ":" + time.split(":")[1] + " "
+                : ""}
+              {cmonth === month ? day : month} {cmonth === month ? weekday : day}{" "}
+              {cyear === year ? "" : year}
+            </span> : <></>}
           </div>
         </div>
       </div>
@@ -146,7 +155,7 @@ export function CommentSection({ postId, className, caption }: CommentSectionPro
     const response = await clientapi.get(`/comment/${postId}?page=${page}&limit=10`)
     return response.data.data
   }
-    useEffect(() => {
+  useEffect(() => {
     async function fetchData() {
       try {
         const response = await clientapi.get(`/post/${postId}`)
