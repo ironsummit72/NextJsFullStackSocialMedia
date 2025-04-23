@@ -92,3 +92,48 @@ export async function isFollowing(req: Request, res: Response) {
     }
 
 }
+export async function isFollowingByUsername(req: Request, res: Response) {
+    try {
+        const { username } = req.params;
+        const loggedInUserId = req.user?.id;
+        if (username && loggedInUserId) {
+            const loggedInUser = await userModel.findOne({ _id: loggedInUserId });
+            const followUserId = await userModel.findOne({ username});
+            const followingArray: string[] = loggedInUser?.following as string[];
+            const followersArray: string[] = followUserId?.followers as string[];
+            const isFollowing = followingArray.includes(followUserId?.id) && followersArray.includes(loggedInUserId!);
+            const response: ApiResponse = {
+                data: isFollowing,
+                message: `user is ${isFollowing}`,
+                redirect: null, statusCode: 200,
+                statusMessage: 'success',
+                success: true
+            }
+            res.status(200).json(response)
+        } else {
+            const response: ApiResponse = {
+                data: null,
+                message: "Either LoggedIn user of UserId missing",
+                redirect: null,
+                statusCode: 400,
+                statusMessage: 'error',
+                success: false
+            }
+            res.status(400).json(response)
+        }
+
+    } catch (e) {
+        const error = e as Error
+        const response: ApiResponse = {
+            data: null,
+            message: error.message,
+            redirect: null,
+            statusCode: 500,
+            statusMessage: 'error',
+            success: false
+        }
+        res.status(500).json(response)
+        console.error(error.message);
+    }
+
+}
