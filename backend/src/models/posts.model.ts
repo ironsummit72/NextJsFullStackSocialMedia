@@ -19,9 +19,8 @@ const PostSchema = new Schema<PostModel>({
 	],
 	hashtags: [
 		{
-			type: mongoose.Schema.Types.ObjectId,
-			ref: 'Hashtag',
-			default: []
+			type: String,
+			default: ''
 		},
 	],
 	likes: [
