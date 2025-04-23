@@ -6,6 +6,7 @@ import postRouter from './routes/post.routes'
 import profileRouter from './routes/profile.routes'
 import contentRouter from './routes/content.routes'
 import commentRouter from './routes/comment.routes'
+import hashtagRouter from './routes/hashtag.routes'
 import userRouter from './routes/user.routes'
 import jwt from 'jsonwebtoken'
 import ConnectDB from './utils/connectDb.util'
@@ -13,6 +14,7 @@ import cookieParser from 'cookie-parser'
 import getCurrentUser from './middleware/CurrentUser.middleware'
 import isUserAuthenticated from './middleware/CheckAuth.middleware'
 import { ApiResponseType } from './types/ApiResponseType'
+
 const PORT = 5002
 const app = express()
 app.use(
@@ -54,6 +56,8 @@ app.use('/content', contentRouter)
 app.use('/post', postRouter)
 app.use('/user', userRouter)
 app.use('/comment',commentRouter)
+app.use('/hashtag',hashtagRouter)
+
 app.listen(PORT, () => {
 	console.log('listening on port ' + PORT)
 })

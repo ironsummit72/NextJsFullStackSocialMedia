@@ -22,7 +22,7 @@ const LinkifyText: React.FC<LinkifyTextProps> = ({ text }) => {
       const tag = part.slice(1);
       return (
         <Link key={i} href={`/tags/${tag}`}>
-          <span className="text-purple-500 hover:underline">{part}</span>
+          <span className="text-blue-500 ">{part}</span>
         </Link>
       );
     }
