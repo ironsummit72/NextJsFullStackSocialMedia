@@ -3,12 +3,30 @@ import { Request, Response } from 'express'
 import postModel from '../models/posts.model'
 import ApiResponse from '../utils/ApiResponse.util'
 import userModel from '../models/users.model';
+import hashTagmodel from '../models/hashtags.model';
 
 export async function createPost(req: Request, res: Response) {
 	const { caption } = req.body;
 	if (caption) {
-		const postDbResponse = await postModel.create({ caption, content: req.files, user: req.user?.id });
+		const Hashtags = caption
+			.split(' ')
+			.filter((word: string) => /^\#/.test(word))
+			.map((name: string) => name.slice(1));
+		const filterDuplicateHashTags = Hashtags.filter((items: string, index: number) => Hashtags.indexOf(items) === index);
+
+		const postDbResponse = await postModel.create({ caption, content: req.files, user: req.user?.id, hashtags: filterDuplicateHashTags });
 		const userDbResponse = await userModel.updateOne({ _id: req.user?.id }, { $push: { posts: postDbResponse._id } });
+		if (filterDuplicateHashTags.length > 0) {
+			filterDuplicateHashTags.forEach(async (hashtag: string) => {				
+				const hashTagResponse = await hashTagmodel.findOne({ tagname: hashtag.trim() });
+				if (!hashTagResponse) {
+					const dbResponse = await hashTagmodel.create({ tagname: hashtag.trim() });
+					await hashTagmodel.updateOne({ _id: dbResponse._id }, { $push: { posts: postDbResponse._id } });
+				} else {
+					await hashTagmodel.updateOne({ _id: hashTagResponse._id }, { $push: { posts: postDbResponse._id } });
+				}
+			})
+		}
 		if (postDbResponse && userDbResponse) {
 			const response: ApiResponse = {
 				data: postDbResponse, message: 'post uploaded successfully', redirect: null, statusCode: 201, statusMessage: 'success',
