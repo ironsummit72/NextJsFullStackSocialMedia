@@ -14,6 +14,7 @@ import { getCurrentUserClient } from '@/lib/getCurrentUserClient';
 import { twMerge } from 'tailwind-merge';
 import CustomDialog from './Dialogs/Dialog';
 import ShowLikeOfPostContent from './Dialogs/Contents/ShowLikeOfPostContent';
+import LinkifyText from './Linkify';
 
 
 type Props = {
@@ -247,7 +248,8 @@ export function CommentSection({ postId, className, caption }: CommentSectionPro
             <div className="flex-1">
               <div className="inline-flex items-start">
                 <span className="font-semibold text-sm mr-1">{data?.user?.username}</span>
-                <span className="text-sm font-medium">{caption}</span>
+                {/* <span className="text-sm font-medium">{caption}</span> */}
+                <LinkifyText className="text-sm font-medium"  text={caption} />
               </div>
               <div className="flex items-center mt-1 text-xs text-gray-500">
               </div>
@@ -265,7 +267,7 @@ export function CommentSection({ postId, className, caption }: CommentSectionPro
               <div className="flex-1">
                 <div className="inline-flex items-start">
                   <span className="font-semibold text-sm mr-1">{comment.user.username}</span>
-                  <span className="text-sm">{comment.message}</span>
+                  <LinkifyText className="text-sm" text={comment.message} />
                 </div>
                 <div className="flex items-center mt-1 text-xs text-gray-500">
                   {/* <span className="mr-2">{comment.timestamp}</span> */}
@@ -291,7 +293,7 @@ export function CommentSection({ postId, className, caption }: CommentSectionPro
                         <div className="flex-1">
                           <div className="inline-flex items-start">
                             <span className="font-semibold text-sm mr-1">{reply.user.username}</span>
-                            <span className="text-sm">{reply.message}</span>
+                            <LinkifyText className="text-sm" text={reply.message} />
                           </div>
                           <div className="flex items-center mt-1 text-xs text-gray-500">
                             {reply.likes.length > 0 && <span className="mr-2">{reply.likes.length} likes</span>}

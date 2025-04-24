@@ -1,11 +1,13 @@
 import React from 'react';
 import Link from 'next/link'; // or use <a> if not using Next.js
+import { twMerge } from 'tailwind-merge';
 
 interface LinkifyTextProps {
   text: string;
+  className?: string;
 }
 
-const LinkifyText: React.FC<LinkifyTextProps> = ({ text }) => {
+const LinkifyText: React.FC<LinkifyTextProps> = ({ text,className }) => {
   const linkified = text.split(/(\s+)/).map((part, i) => {
     // Match @mention
     if (/^@\w+/.test(part)) {
@@ -30,7 +32,7 @@ const LinkifyText: React.FC<LinkifyTextProps> = ({ text }) => {
     return part;
   });
 
-  return <p>{linkified}</p>;
+  return <p className={twMerge(className)}>{linkified}</p>;
 };
 
 export default LinkifyText;
