@@ -69,7 +69,7 @@ function UserCard({ username }: UserCardProps) {
                     <DisplayPicture username={username} width={40} height={40} />
                     <div className='max-w-[90%] w-[90%]'>
                         <h1 className='font-bold' title='username'>{username}</h1>
-                        <h3 title='info' className='text-gray-500'>{'Suggested for you'}</h3>
+                        <h3 title='info' className='text-gray-500'>{user?.firstName} {user?.lastName}</h3>
                     </div>
                     <div>
                         {
