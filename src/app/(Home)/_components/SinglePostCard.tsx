@@ -21,6 +21,8 @@ import { useToast } from "@/hooks/use-toast"
 import Link from "next/link"
 import LinkifyText from "@/components/custom/Linkify"
 import Video from "@/components/custom/Video"
+import CustomDialog from "@/components/custom/Dialogs/Dialog"
+import ShowLikeOfPostContent from "@/components/custom/Dialogs/Contents/ShowLikeOfPostContent"
 
 
 // Sample carousel images
@@ -63,8 +65,8 @@ export default function SinglePostCard({ postId }: Props) {
     const [newComment, setNewComment] = useState("")
     const [weekday, month, day, year, time] = new Date(data?.createdAt!).toString().split(" ")
     const [cweekday, cmonth, cday, cyear, ctime] = new Date(Date.now()).toString().split(" ")
-   
-   
+
+
     useEffect(() => {
         async function fetchData() {
             try {
@@ -219,7 +221,10 @@ export default function SinglePostCard({ postId }: Props) {
                 </div>
 
                 {/* Like count */}
-                <div className="font-semibold text-sm mt-2 text-black">{data?.likes.length} likes</div>
+
+                <CustomDialog title='Likes' content={<ShowLikeOfPostContent postId={postId} />}>
+                    <span className='font-semibold'> {data?.likes.length} likes</span>
+                </CustomDialog>
 
                 {/* Caption */}
                 <div className="mt-1 text-sm flex items-center">
