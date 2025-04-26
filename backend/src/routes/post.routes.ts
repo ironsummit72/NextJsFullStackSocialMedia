@@ -1,9 +1,10 @@
 import { Router } from 'express'
-import { createPost, editPost, deletePost, getAllPostsByUsername, getPostById, recommendedPosts, likePost, savePost, isSaved, isLiked,getSavedPostsByUsername,getLikesOfPostByPostId} from '../controller/post.controller'
+import { createPost, editPost, deletePost, getAllPostsByUsername, getPostById, recommendedPosts, likePost, savePost, isSaved, isLiked,getSavedPostsByUsername,getLikesOfPostByPostId,getPersonalizedPost} from '../controller/post.controller'
 import upload from '../middleware/multer.middleware'
 const router = Router()
 
 router.get('/:id', getPostById)
+router.get('/personalized/post', getPersonalizedPost)
 router.get('/likes/:postId', getLikesOfPostByPostId)
 router.get('/user/:username', getAllPostsByUsername)
 router.get('/r/recommended', recommendedPosts)
