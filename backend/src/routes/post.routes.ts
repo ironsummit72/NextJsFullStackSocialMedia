@@ -15,5 +15,5 @@ router.post('/create', upload.array('posts'), createPost)
 router.patch('/:id', editPost)
 router.patch('/like/:postId', likePost)
 router.patch('/save/:postId', savePost)
-router.delete('/:id', deletePost)
+router.delete('/:postId', deletePost)
 export default router

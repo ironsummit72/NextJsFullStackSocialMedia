@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Image from "next/image"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -15,7 +14,7 @@ import {
 import { Heart, MessageCircle, Send, Bookmark, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 import { clientapi } from "@/lib/api"
-import { PostData, UserData } from "@/types"
+import { PostData, USER, UserData } from "@/types"
 import DisplayPicture from "@/components/custom/DisplayPicture"
 import { useToast } from "@/hooks/use-toast"
 import Link from "next/link"
@@ -23,6 +22,7 @@ import LinkifyText from "@/components/custom/Linkify"
 import Video from "@/components/custom/Video"
 import CustomDialog from "@/components/custom/Dialogs/Dialog"
 import ShowLikeOfPostContent from "@/components/custom/Dialogs/Contents/ShowLikeOfPostContent"
+import { getCurrentUserClient } from "@/lib/getCurrentUserClient"
 
 
 
@@ -59,6 +59,12 @@ export default function SinglePostCard({ postId }: Props) {
     const [newComment, setNewComment] = useState("")
     const [weekday, month, day, year, time] = new Date(data?.createdAt!).toString().split(" ")
     const [cweekday, cmonth, cday, cyear, ctime] = new Date(Date.now()).toString().split(" ")
+
+    const [user, setUser] = useState<USER | null>()
+
+    useEffect(() => { getCurrentUserClient().then((res) => setUser(res)) }, [])
+
+
 
 
     useEffect(() => {
@@ -111,6 +117,15 @@ export default function SinglePostCard({ postId }: Props) {
     }, [reload])
 
 
+
+    function handleDeletePost(){
+        clientapi.delete(`/post/${postId}`).then((res) => {
+            toast({ title: "Post deleted", description: res.data.message })
+            setReload((prev) => !prev)
+        }).catch((err) => {
+            console.error(err);
+        })
+    }
 
     function handleLike() {
         clientapi.patch(`post/like/${postId}`).then((res) => {
@@ -169,7 +184,10 @@ export default function SinglePostCard({ postId }: Props) {
                         <DropdownMenuItem>Copy link</DropdownMenuItem>
                         <DropdownMenuItem>Embed</DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-600">Report</DropdownMenuItem>
+                        {user?.username === data?.user.username && <DropdownMenuItem className="text-red-500"  onClick={handleDeletePost}>Delete Post</DropdownMenuItem>}
+
+                       
+
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
