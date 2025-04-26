@@ -23,6 +23,7 @@ import Video from "@/components/custom/Video"
 import CustomDialog from "@/components/custom/Dialogs/Dialog"
 import ShowLikeOfPostContent from "@/components/custom/Dialogs/Contents/ShowLikeOfPostContent"
 import { getCurrentUserClient } from "@/lib/getCurrentUserClient"
+import { useRouter } from "next/navigation"
 
 
 
@@ -47,6 +48,7 @@ type CommentsType = {
     replies: ReplyType[]
 }
 export default function SinglePostCard({ postId }: Props) {
+    const router=useRouter()
     const { toast } = useToast()
     const [data, setData] = useState<PostData>();
     const [isliked, setIsLiked] = useState<boolean>(false);
@@ -178,13 +180,10 @@ export default function SinglePostCard({ postId }: Props) {
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                        <DropdownMenuItem>Add to favorites</DropdownMenuItem>
-                        <DropdownMenuItem>Go to post</DropdownMenuItem>
-                        <DropdownMenuItem>Share to...</DropdownMenuItem>
-                        <DropdownMenuItem>Copy link</DropdownMenuItem>
-                        <DropdownMenuItem>Embed</DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        {user?.username === data?.user.username && <DropdownMenuItem className="text-red-500"  onClick={handleDeletePost}>Delete Post</DropdownMenuItem>}
+                        <DropdownMenuItem onClick={()=>{router.push(`/post/${data?._id}`)}}>Go to post</DropdownMenuItem>
+                        <DropdownMenuItem onClick={()=>{navigator.clipboard.writeText(`${window.location.origin}/post/${data?._id}`)}}>Copy link</DropdownMenuItem>
+                       
+                        {user?.username === data?.user.username &&  <> <DropdownMenuSeparator /> <DropdownMenuItem className="text-red-500"  onClick={handleDeletePost}>Delete Post</DropdownMenuItem> </>}
 
                        
 
