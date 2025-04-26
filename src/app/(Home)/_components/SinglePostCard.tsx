@@ -25,13 +25,7 @@ import CustomDialog from "@/components/custom/Dialogs/Dialog"
 import ShowLikeOfPostContent from "@/components/custom/Dialogs/Contents/ShowLikeOfPostContent"
 
 
-// Sample carousel images
-const carouselImages = [
-    "/placeholder.svg?height=600&width=600",
-    "/placeholder.svg?height=600&width=600&text=Beach+Sunset",
-    "/placeholder.svg?height=600&width=600&text=Ocean+View",
-    "/placeholder.svg?height=600&width=600&text=Palm+Trees",
-]
+
 
 type Props = {
     postId: string
