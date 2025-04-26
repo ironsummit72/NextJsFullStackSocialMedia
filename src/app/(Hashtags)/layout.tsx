@@ -9,10 +9,8 @@ export const metadata = {
 
 export default async function RootLayout({
   children,
-  modal
 }: {
   children: React.ReactNode
-  modal: React.ReactNode
 }) {
    const {username}=await getCurrentUser()
   return (
@@ -25,7 +23,6 @@ export default async function RootLayout({
           <div className="hidden md:block">
           </div>
           </div>
-          {modal}
           <Toaster/>
         </div>
 
