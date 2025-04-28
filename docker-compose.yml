@@ -1,13 +1,15 @@
 services:
   app:
+   
     build: .
     ports:
       - "3000:3000"
+    container_name: next-frontend
     networks:
       - app-network
     environment:
-      - NEXT_PUBLIC_BASE_URL=http://localhost:5002
-      - BASE_URL=http://localhost:5002
+      - NEXT_PUBLIC_BASE_URL=http://backend:5002
+      - BASE_URL=http://backend:5002
     depends_on: 
       - backend
   
@@ -18,15 +20,18 @@ services:
        - "27018:27017"  
      networks:
        - app-network
+     volumes:
+       - db_data:/data/db
   
   backend:
     build: 
      context: ./backend
      dockerfile: Dockerfile
+    container_name: backend
     ports:
       - "5002:5002"
     volumes:
-      - .:/app
+      - uploads_data:/production/uploads
     # command: bundle exec rails s -p 3001 -b 0.0.0.0
     networks:
       - app-network
@@ -38,7 +43,12 @@ services:
      - ORIGIN=http://localhost:3000
     depends_on: 
       - db
+  
 
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  db_data:
+  uploads_data:
