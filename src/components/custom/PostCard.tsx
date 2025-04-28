@@ -15,6 +15,7 @@ import { twMerge } from 'tailwind-merge';
 import CustomDialog from './Dialogs/Dialog';
 import ShowLikeOfPostContent from './Dialogs/Contents/ShowLikeOfPostContent';
 import LinkifyText from './Linkify';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible';
 
 
 type Props = {
@@ -190,6 +191,7 @@ export function CommentSection({ postId, className, caption }: CommentSectionPro
         variant: 'destructive',
         description: 'comment deleted successfully'
       })
+      setReload((prev) => !prev)
     })
   }
   function onHandleDeleteComment(id: string) {
@@ -285,7 +287,10 @@ export function CommentSection({ postId, className, caption }: CommentSectionPro
                 </div>
                 {comment.replies.length > 0 && (
                   <div className="ml-6 mt-2">
-                    {comment.replies.map((reply) => (
+                  <Collapsible >
+                  <CollapsibleTrigger ><span className='text-xs text-gray-500'>view replies ({comment.replies.length})</span></CollapsibleTrigger>
+                  <CollapsibleContent>
+                  {comment.replies.map((reply) => (
                       <div key={reply._id} className="flex items-start mb-2">
                         <Avatar className="h-6 w-6 mr-2">
                           <DisplayPicture username={reply.user.username} width={70} height={70} />
@@ -311,6 +316,8 @@ export function CommentSection({ postId, className, caption }: CommentSectionPro
                         </button>
                       </div>
                     ))}
+                  </CollapsibleContent>
+                  </Collapsible>
                   </div>
                 )}
               </div>
