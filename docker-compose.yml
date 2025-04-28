@@ -1,0 +1,44 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+    environment:
+      - NEXT_PUBLIC_BASE_URL=http://localhost:5002
+      - BASE_URL=http://localhost:5002
+    depends_on: 
+      - backend
+  
+  db:
+     image: mongo
+     container_name: databasemongo
+     ports:
+       - "27018:27017"  
+     networks:
+       - app-network
+  
+  backend:
+    build: 
+     context: ./backend
+     dockerfile: Dockerfile
+    ports:
+      - "5002:5002"
+    volumes:
+      - .:/app
+    # command: bundle exec rails s -p 3001 -b 0.0.0.0
+    networks:
+      - app-network
+    environment:
+     - PORT=5002
+     - DB_URL=mongodb://databasemongo:27017
+     - DB_NAME=nextsocialmedia
+     - JWT_SECRET=monza
+     - ORIGIN=http://localhost:3000
+    depends_on: 
+      - db
+
+networks:
+  app-network:
+    driver: bridge
