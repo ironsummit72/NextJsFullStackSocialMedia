@@ -277,3 +277,61 @@ export async function addViewsToStory(req: Request, res: Response) {
         res.status(response.statusCode).json(response)
     }
 }
+export async function userHasStory(req: Request, res: Response,) {
+    try {
+        const { username } = req.params
+        if (username) {
+            const dbResponse = await userModel.findOne({ username })
+            if (dbResponse) {
+                const storyResponse = await storyModel.find({ user: dbResponse.id });
+                if (storyResponse.length>0) {
+                    const response: ApiResponse = {
+                        data: true,
+                        message: `stories of ${username}`,
+                        redirect: null,
+                        statusCode: 200,
+                        statusMessage: 'success',
+                        success: true
+                    }
+                    res.status(response.statusCode).json(response)
+                } else {
+                    const response: ApiResponse = {
+                        data: false,
+                        message: `no stories found with this username: ${username}`,
+                        redirect: null,
+                        statusCode: 200,
+                        statusMessage: 'success',
+                        success: true
+                    }
+                    res.status(response.statusCode).json(response)
+                }
+            }else{
+                const response: ApiResponse = {
+                    data: null,
+                    message: `no user found with this username: ${username}`,
+                    redirect: null,
+                    statusCode: 404,
+                    statusMessage: 'not found',
+                    success: false
+                }
+                res.status(response.statusCode).json(response)
+            }
+        } else {
+            const response: ApiResponse = {
+                data: null,
+                message: `no user found with this username: ${username}`,
+                redirect: null,
+                statusCode: 404,
+                statusMessage: 'not found',
+                success: false
+            }
+            res.status(response.statusCode).json(response)
+        }
+    } catch (err) {
+        const error = err as Error
+        const response: ApiResponse = {
+            data: null, message: error.message, redirect: null, statusCode: 500, statusMessage: 'error', success: false
+        }
+        res.status(response.statusCode).json(response)
+    }
+}
