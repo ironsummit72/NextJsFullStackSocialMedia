@@ -7,6 +7,7 @@ import profileRouter from './routes/profile.routes'
 import contentRouter from './routes/content.routes'
 import commentRouter from './routes/comment.routes'
 import hashtagRouter from './routes/hashtag.routes'
+import storyRouter from './routes/stories.routes'
 import userRouter from './routes/user.routes'
 import jwt from 'jsonwebtoken'
 import ConnectDB from './utils/connectDb.util'
@@ -55,8 +56,9 @@ app.use(`/profile`, profileRouter)
 app.use('/content', contentRouter)
 app.use('/post', postRouter)
 app.use('/user', userRouter)
-app.use('/comment',commentRouter)
-app.use('/hashtag',hashtagRouter)
+app.use('/comment', commentRouter)
+app.use('/hashtag', hashtagRouter)
+app.use('/story', storyRouter)
 
 app.listen(PORT, () => {
 	console.log('listening on port ' + PORT)
