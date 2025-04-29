@@ -48,3 +48,10 @@ export interface DB_Relation {
 	type: Schema
 	ref: string
 }
+export interface StoriesModel {
+	user: ObjectId
+	contentPath: {}
+	seenBy: [],
+	likes:[],
+	
+}
