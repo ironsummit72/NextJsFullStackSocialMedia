@@ -13,7 +13,7 @@ export async function Suggession() {
   return (
     <div className='h-screen w-auto flex flex-col items-center '>
       <div className='flex justify-between items-center w-[70%]'> <h1 className='font-bold text-gray-600'>Suggested for you</h1> <Button className='font-bold text-blue-500' variant='ghost' asChild><Link href={`/explore/people`}>See All</Link></Button></div>
-      {data.data.map((user:UserData)=>{
+      {data.data.slice(0,5).map((user:UserData)=>{
         return <SuggessionCard key={user._id} username={user.username} />
       })}
     </div>
