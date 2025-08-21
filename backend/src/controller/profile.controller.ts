@@ -311,15 +311,16 @@ export async function getFollowing(req: Request, res: Response) {
                 res.status(400).json(response)
             }
         } else {
-            const response: ApiResponse = {
-                data: null,
-                message: 'please provide page and limit as query string ',
+             const dbResponse = await userModel.findOne({ username }).populate({ path: 'following', select: '-password -posts -followers -following -likedPosts -savedPosts -taggedPosts -bio -createdAt -updatedAt -__v -email -firstName -lastName -displayPicturePath',  }).select('-password -_id -posts -followers -username -email -firstName -lastName -displayPicturePath -likedPosts -savedPosts -taggedPosts');
+             const response: ApiResponse = {
+                data: dbResponse,
+                message: 'here is the following data',
                 redirect: null,
-                statusCode: 400,
+                statusCode: 200,
                 statusMessage: 'failed',
                 success: false
             }
-            res.status(400).json(response)
+            res.status(response.statusCode).json(response)
         }
     } catch (err) {
         const error = err as Error;
