@@ -16,28 +16,31 @@ export const metadata: Metadata = {
   description: "A Social media to share your creativity and make friends",
 };
 
-export  default async function RootLayout({
+export default async function RootLayout({
   children,
-
+  stories,
   suggession
 }: Readonly<{
   children: React.ReactNode;
-  suggession:React.ReactNode
+  suggession: React.ReactNode
+  stories: React.ReactNode
 }>) {
-  const {username}=await getCurrentUser()
+  const { username } = await getCurrentUser()
 
   return (
     <html lang="en">
       <body className={inter.className}>
         <div className="grid grid-rows-[80px_1fr] md:grid-cols-[250px_1fr]">
-          <SideBar username={username}/>
+          <SideBar username={username} />
           <div className="md:grid md:grid-cols-[60vw_1fr]">
-          {children}
-          <div className="hidden md:block">
-          {suggession}
+            <div className="flex flex-col  items-center gap-5">
+              {stories}
+              {children}
+            </div>
+            <div className="hidden md:block">
+              {suggession}
+            </div>
           </div>
-          </div>
-         
         </div>
         <Toaster />
       </body>
