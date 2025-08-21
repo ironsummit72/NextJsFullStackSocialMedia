@@ -98,7 +98,7 @@ export async function isFollowingByUsername(req: Request, res: Response) {
         const loggedInUserId = req.user?.id;
         if (username && loggedInUserId) {
             const loggedInUser = await userModel.findOne({ _id: loggedInUserId });
-            const followUserId = await userModel.findOne({ username});
+            const followUserId = await userModel.findOne({ username });
             const followingArray: string[] = loggedInUser?.following as string[];
             const followersArray: string[] = followUserId?.followers as string[];
             const isFollowing = followingArray.includes(followUserId?.id) && followersArray.includes(loggedInUserId!);
@@ -136,4 +136,42 @@ export async function isFollowingByUsername(req: Request, res: Response) {
         console.error(error.message);
     }
 
+}
+
+export async function searchUser(req: Request, res: Response) {
+    try {
+        const { searchTerm } = req.params
+        if (searchTerm) {
+            const users = await userModel.find({
+                $or: [
+                    { username: { $regex: searchTerm, $options: 'i' } },
+                    { firstName: { $regex: searchTerm, $options: 'i' } },
+                    { lastName: { $regex: searchTerm, $options: 'i' } }
+                ]
+            }).limit(5)
+            const response: ApiResponse = {
+                data: users,
+                message: "users found",
+                redirect: null,
+                statusCode: 200,
+                statusMessage: 'success',
+                success: true
+            }
+            res.status(200).json(response)
+        }
+        else {
+            const response: ApiResponse = {
+                data: null,
+                message: "search term missing",
+                redirect: null,
+                statusCode: 400,
+                statusMessage: 'error',
+                success: false
+            }
+            res.status(400).json(response)
+        }
+
+    } catch (error) {
+        console.error(error);
+    }
 }
