@@ -28,6 +28,7 @@ import { useRouter } from "next/navigation"
 
 
 
+
 type Props = {
     postId: string
 }
@@ -61,13 +62,11 @@ export default function SinglePostCard({ postId }: Props) {
     const [newComment, setNewComment] = useState("")
     const [weekday, month, day, year, time] = new Date(data?.createdAt!).toString().split(" ")
     const [cweekday, cmonth, cday, cyear, ctime] = new Date(Date.now()).toString().split(" ")
+    const [isFollowing, setIsFollowing] = useState<boolean>(false);
 
     const [user, setUser] = useState<USER | null>()
 
     useEffect(() => { getCurrentUserClient().then((res) => setUser(res)) }, [])
-
-
-
 
     useEffect(() => {
         async function fetchData() {
@@ -80,6 +79,19 @@ export default function SinglePostCard({ postId }: Props) {
         }
         fetchData()
     }, [reload])
+    
+    useEffect(()=>{
+        // to check if user is following or not
+      async function fetchData() {
+        try {
+            const response=await clientapi.get(`user/isfollowing/${data?.user._id}`)
+            setIsFollowing(response.data.data)            
+        } catch (error) {
+            console.error(error);
+        }
+      }
+      fetchData();
+    },[data,reload])
     async function fetchComments(page: Number) {
         const response = await clientapi.get(`/comment/${postId}?page=${page}&limit=10`)
         return response.data.data
@@ -159,6 +171,19 @@ export default function SinglePostCard({ postId }: Props) {
                 })
         }
     }
+    function onHandleFollow()
+    {
+        clientapi.post(`/user/follow/${data?.user._id}`).then((res) => {
+            toast({
+              title: "follow",
+              description: res.data?.message
+            })
+          })
+          
+          setReload((prev) => !prev)
+    }
+
+
 
     return (
         <div className="max-w-md mx-auto bg-white rounded-lg overflow-hidden border border-gray-200">
@@ -169,7 +194,9 @@ export default function SinglePostCard({ postId }: Props) {
                     <AvatarFallback>TG</AvatarFallback>
                 </Avatar>
                 <div className="flex-1 text-black">
-                    <div className="font-semibold text-sm">{data?.user.username}</div>
+                  <div className="flex items-center gap-1">  <Link href={`/${data?.user.username}`} className="font-semibold text-sm">{data?.user.username}</Link>
+                   {data?.user._id!== user?.id && !isFollowing &&  <Button onClick={onHandleFollow} className="hover:no-underline font-bold" variant={'link'}>Follow</Button>}
+                    </div>
                     {/* <div className="text-xs text-gray-500">Bali, Indonesia</div> */}
                 </div>
                 <DropdownMenu>
@@ -182,11 +209,7 @@ export default function SinglePostCard({ postId }: Props) {
                     <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={()=>{router.push(`/post/${data?._id}`)}}>Go to post</DropdownMenuItem>
                         <DropdownMenuItem onClick={()=>{navigator.clipboard.writeText(`${window.location.origin}/post/${data?._id}`)}}>Copy link</DropdownMenuItem>
-                       
                         {user?.username === data?.user.username &&  <> <DropdownMenuSeparator /> <DropdownMenuItem className="text-red-500"  onClick={handleDeletePost}>Delete Post</DropdownMenuItem> </>}
-
-                       
-
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
