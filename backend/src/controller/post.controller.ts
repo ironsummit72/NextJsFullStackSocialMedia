@@ -748,3 +748,55 @@ export async function getPersonalizedPost(req: Request, res: Response) {
 
 	}
 }
+export async function getPersonalizedReels(req: Request, res: Response) {
+
+	try {
+		const page = Number(req.query?.page)
+		const limit = Number(req.query?.limit)
+		const startIndex = (page - 1) * limit;
+		const loggedInUser = req.user
+		if (page && limit) {
+			const user = await userModel.findById(loggedInUser?.id).select('likedPosts savedPosts');
+			if (user) {
+				const excludedPosts = [...user?.likedPosts, ...user?.savedPosts];
+				const endPage = Math.ceil(await postModel.find({ _id: { $nin: excludedPosts } }).countDocuments() / limit);
+				const postsResponse = await postModel.find({ _id: { $nin: excludedPosts },"content.mimetype":"video/mp4" },{ __v: 0, caption: 0, comments: 0, hashtags: 0, mentions: 0, user: 0 ,likes:0,createdAt:0,updatedAt:0}).skip(startIndex).limit(limit);
+				if (postsResponse) {
+					const response: ApiResponse = {
+						data: { postsResponse, endPage },
+						message: "Personalized Posts",
+						redirect: null,
+						statusCode: 200,
+						statusMessage: 'success',
+						success: true,
+					}
+					res.status(200).json(response);
+				}
+			}
+		} else {
+			const response: ApiResponse = {
+				data: null,
+				message: 'page and limit not provided in Request Parameters',
+				redirect: null,
+				statusCode: 400,
+				statusMessage: 'bad request',
+				success: false
+			}
+			res.status(response.statusCode).json(response)
+		}
+
+	} catch (err) {
+		const error = err as Error
+		const response: ApiResponse = {
+			data: null,
+			message: error.message,
+			redirect: null,
+			statusCode: 500,
+			statusMessage: 'error',
+			success: false
+		}
+		res.status(response.statusCode).json(response)
+
+	}
+}
+
