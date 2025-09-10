@@ -760,7 +760,7 @@ export async function getPersonalizedReels(req: Request, res: Response) {
 			if (user) {
 				const excludedPosts = [...user?.likedPosts, ...user?.savedPosts];
 				const endPage = Math.ceil(await postModel.find({ _id: { $nin: excludedPosts } }).countDocuments() / limit);
-				const postsResponse = await postModel.find({ _id: { $nin: excludedPosts },"content.mimetype":"video/mp4" },{ __v: 0, caption: 0, comments: 0, hashtags: 0, mentions: 0, user: 0 ,likes:0,createdAt:0,updatedAt:0}).skip(startIndex).limit(limit);
+				const postsResponse = await postModel.find({ _id: { $nin: excludedPosts },"content.mimetype":"video/mp4" },{ __v: 0, caption: 0, comments: 0, hashtags: 0, mentions: 0 ,likes:0,createdAt:0,updatedAt:0}).skip(startIndex).limit(limit).populate({ path: "user", select: "-password" });
 				if (postsResponse) {
 					const response: ApiResponse = {
 						data: { postsResponse, endPage },
