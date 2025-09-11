@@ -1,12 +1,14 @@
 import Link from 'next/link'
 import React from 'react'
 import Image from 'next/image'
-import { Bell, Compass, Home, LogOut, MessageCircle, Plus, Settings, VideotapeIcon } from 'lucide-react'
+import { Bell, Compass, Home, LogOut, MessageCircle, Plus, Search, Settings } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import DisplayPicture from '@/components/custom/DisplayPicture'
 import CustomDropDown from './Dropdown/CustomDropDown'
 import CreatePostMenu from './Dropdown/CreatePostMenu'
 import CustomAlertDialog from './AlertDialog/CustomAlertDialog'
+import SearchUsers from './SearchUsers'
+import VideotapeIcon from '@/components/custom/Icons/VideotapeIcon'
 type Props={
     username:string
 }
@@ -19,6 +21,9 @@ function SideBar({username}:Props) {
                 <Image src={'/logo.png'} alt='logo' width={32} height={32} />
                 <h1 className='text-2xl font-bold hidden md:block'>Snapgram</h1>
                 </Link>
+                <div className='hidden md:block w-full'>
+                  <SearchUsers />
+                </div>
                 <div className='flex flex-col gap-14 font-bold'>
                     <Link className='flex items-center gap-4' href={'/'}><Home /> <span className='hidden md:block'>Home</span></Link>
                     <Link className='flex items-center gap-4' href={'/explore'}><Compass/> <span className='hidden md:block'>Explore</span></Link>
@@ -41,17 +46,19 @@ function SideBar({username}:Props) {
                   <Link className='flex items-center gap-4' href={'/'}>
                       <h1 className='text-2xl font-bold'>Snapgram</h1>
                   </Link>
-                  <Input className='w-full' placeholder='Search' />
+                  <div className='w-full'>
+                    <SearchUsers />
+                  </div>
                   <Link title='Notifications' className='flex items-center gap-4' href={'/notifications'}><Bell /> </Link>
             </div>
             {/* bottom navbar */}
             <div className='md:hidden z-20 flex items-center justify-center gap-14 fixed bottom-0 left-0 right-0 bg-white border shadow-2xl border-2 border-x-0 p-4 md:px-8'>
-                <Link title='Home' className='flex items-center gap-4' href={'/'}><Home /></Link>
-                <Link title='Explore' className='flex items-center gap-4' href={'/explore'}><Compass/> </Link>
-                <Link title='Reels' className='flex items-center gap-4' href={'/reels'}><VideotapeIcon/> </Link>    
-                <Link title='Messages' className='flex items-center gap-4' href={'/messages'}><MessageCircle/> </Link>
-                <Link title='Notifications' className='flex items-center gap-4' href={'/notifications'}><Bell/> </Link>
-                <Link title='Profile'  className='flex items-center gap-4' href={`/${username}`}><DisplayPicture username={username} width={30} height={30}/> </Link>
+                <Link title='Home' className='flex items-center gap-4' href={'/'}><Home className='h-6 w-6' /></Link>
+                <Link title='Explore' className='flex items-center gap-4' href={'/explore'}><Compass className='h-6 w-6' /> </Link>
+                <Link title='Search' className='flex items-center gap-4' href={'/search'}><Search className='h-6 w-6' /> </Link>
+                <Link title='Reels' className='flex items-center gap-4' href={'/reels'}><VideotapeIcon className='h-6 w-6' /> </Link>    
+                <Link title='Messages' className='flex items-center gap-4' href={'/messages'}><MessageCircle className='h-6 w-6' /> </Link>
+                <Link title='Profile'  className='flex items-center gap-4' href={`/${username}`}><DisplayPicture username={username} width={24} height={24}/> </Link>
             </div>
         </aside>
     </div>
